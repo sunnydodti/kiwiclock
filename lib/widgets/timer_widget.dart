@@ -43,8 +43,8 @@ class _TimerWidgetState extends State<TimerWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(_getTimeString()),
-        _buildStartButton(),
-        _buildStopButton()
+        if (!_stopwatch.isRunning) _buildStartButton(),
+        if (_stopwatch.isRunning) _buildStopButton()
       ],
     );
   }

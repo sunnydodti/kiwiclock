@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:pwa_install/pwa_install.dart';
 
 import '../data/theme_provider.dart';
+import '../widgets/bottom_navbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: _buildAppBar(),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      bottomNavigationBar: BottomNavbar(),
       body: Column(
         children: [
           Expanded(child: TimerWidget()),
