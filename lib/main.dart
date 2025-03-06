@@ -3,8 +3,11 @@ import 'package:provider/provider.dart';
 
 import 'data/theme_provider.dart';
 import 'pages/home_page.dart';
+import 'service/startup_service.dart';
 
-void main() {
+void main() async {
+  StartupService.init();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => ThemeProvider()),
