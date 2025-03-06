@@ -12,7 +12,7 @@ class StopWatchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(child: TimerWidget()),
+        Expanded(child: StopWatchWidget()),
         if (PWAInstall().installPromptEnabled)
           ElevatedButton(
             onPressed: () {
