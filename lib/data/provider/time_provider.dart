@@ -1,12 +1,22 @@
 import 'package:flutter/foundation.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:kiwiclock/data/constants.dart';
+
+import '../../extensions/stopwatch.dart';
 
 class TimeProvider extends ChangeNotifier {
-  late Stopwatch _stopwatch;
+  late Box box;
+
+  late StopWatch _stopwatch;
+  bool isStopWatchCompleted = false;
+
   TimeProvider() {
-    _stopwatch = Stopwatch();
+    box = Hive.box(Constants.box);
+    _stopwatch = StopWatch();
+    // _stopwatch.
   }
 
-  Stopwatch get stopwatch => _stopwatch;
+  StopWatch get stopWatch => _stopwatch;
 
   void startStopwatch() {
     if (!_stopwatch.isRunning) {
@@ -23,7 +33,7 @@ class TimeProvider extends ChangeNotifier {
   }
 
   String getTimeString() {
-    var milli = _stopwatch.elapsed.inMilliseconds;
+    var milli = _stopwatch.elapsedDuration.inMilliseconds;
 
     String milliseconds = (milli % 1000).toString().padLeft(3, '0');
     String seconds = ((milli ~/ 1000) % 60).toString().padLeft(2, '0');

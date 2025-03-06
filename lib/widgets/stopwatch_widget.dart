@@ -17,7 +17,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
   late Timer _timer;
 
   void rebuild(Timer timer) {
-    if (context.read<TimeProvider>().stopwatch.isRunning) {
+    if (context.read<TimeProvider>().stopWatch.isRunning) {
       setState(() {});
     }
   }
@@ -36,7 +36,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     super.dispose();
   }
 
-  void _stop() {
+  void _pause() {
     _timer.cancel();
     context.read<TimeProvider>().stopStopWatch();
   }
@@ -52,36 +52,46 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(context.select((TimeProvider t) => t.getTimeString())),
-        if (context.select((TimeProvider t) => !t.stopwatch.isRunning))
-          _buildStartButton(),
-        if (context.select((TimeProvider t) => t.stopwatch.isRunning))
-          _buildPauseButton(),
-        if (context.select((TimeProvider t) => t.stopwatch.isRunning))
-          _buildStopButton()
+        _buildStartButton(),
+        _buildPauseButton(),
+        _buildStopButton()
       ],
     );
   }
 
   SizedBox _buildStopButton() {
+    if (context
+        .select((TimeProvider t) => t.stopWatch.elapsedMilliseconds < 1)) {
+      return SizedBox.shrink();
+    }
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _stop,
+        onPressed: _pause,
         child: Icon(Icons.stop_outlined),
       ),
     );
   }
+
   SizedBox _buildPauseButton() {
+    if (context.select((TimeProvider t) => !t.stopWatch.isRunning)) {
+      return SizedBox.shrink();
+    }
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _stop,
+        onPressed: _pause,
         child: Icon(Icons.pause_outlined),
       ),
     );
   }
 
   SizedBox _buildStartButton() {
+    if (context.select((TimeProvider t) => t.stopWatch.isRunning)) {
+      return SizedBox.shrink();
+    }
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(

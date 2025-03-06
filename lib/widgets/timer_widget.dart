@@ -17,7 +17,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
   late Timer _timer;
 
   void rebuild(Timer timer) {
-    if (context.read<TimeProvider>().stopwatch.isRunning) {
+    if (context.read<TimeProvider>().stopWatch.isRunning) {
       setState(() {});
     }
   }
@@ -52,11 +52,11 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(context.select((TimeProvider t) => t.getTimeString())),
-        if (context.select((TimeProvider t) => !t.stopwatch.isRunning))
+        if (context.select((TimeProvider t) => !t.stopWatch.isRunning))
           _buildStartButton(),
-        if (context.select((TimeProvider t) => t.stopwatch.isRunning))
+        if (context.select((TimeProvider t) => t.stopWatch.isRunning))
           _buildPauseButton(),
-        if (context.select((TimeProvider t) => t.stopwatch.isRunning))
+        if (context.select((TimeProvider t) => t.stopWatch.isRunning))
           _buildStopButton()
       ],
     );
