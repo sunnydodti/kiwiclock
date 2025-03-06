@@ -23,7 +23,7 @@ class BottomNavbar extends StatelessWidget {
             NavigationDestination(
               // icon: Badge(child: Icon(Icons.timer_outlined)),
               icon: Icon(Icons.timer_outlined),
-              label: 'Messages',
+              label: 'StopWatch',
             ),
           ],
         );

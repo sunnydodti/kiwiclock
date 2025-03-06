@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiwiclock/data/provider/nav_Provider.dart';
+import 'package:kiwiclock/pages/stop_watch_page.dart';
 import 'package:kiwiclock/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pwa_install/pwa_install.dart';
@@ -22,18 +23,10 @@ class _HomePageState extends State<HomePage> {
       appBar: _buildAppBar(),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: BottomNavbar(),
-      body: Column(
-        children: [
-          Expanded(child: TimerWidget()),
-          if (PWAInstall().installPromptEnabled)
-            ElevatedButton(
-              onPressed: () {
-                PWAInstall().promptInstall_();
-              },
-              child: const Text('Install PWA'),
-            ),
-        ],
-      ),
+      body: [
+        Placeholder(),
+        StopWatchPage(),
+      ][navProvider.index],
     );
   }
 
