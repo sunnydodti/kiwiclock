@@ -3,32 +3,66 @@ import 'package:hive_ce/hive.dart';
 import 'package:kiwiclock/data/constants.dart';
 
 import '../../extensions/stopwatch.dart';
+import '../../models/stopwatch_history.dart';
 
 class TimeProvider extends ChangeNotifier {
   late Box box;
 
   late StopWatch _stopwatch;
   bool isStopWatchCompleted = false;
+  late StopwatchHistory _stopwatchHistory;
+  StopwatchHistory? _completedStopwatchHistory;
+  late List<StopwatchHistory> _stopwatchHistories = [];
+  bool _isSwHView = false;
+
 
   TimeProvider() {
+    _stopwatchHistory = StopwatchHistory();
     box = Hive.box(Constants.box);
     _stopwatch = StopWatch();
+
+    getStopWatchHistories(notify: false);
     // _stopwatch.
   }
 
   StopWatch get stopWatch => _stopwatch;
+  StopwatchHistory? get stopwatchHistory => _completedStopwatchHistory;
+  bool get isSwHView => _isSwHView;
+  List<StopwatchHistory> get stopwatchHistories => _stopwatchHistories;
+
+  void toggleSwHView() {
+    _isSwHView = !_isSwHView;
+    notifyListeners();
+  }
+
 
   void startStopwatch() {
     if (!_stopwatch.isRunning) {
+      _stopwatchHistory.startTime = DateTime.now();
       _stopwatch.start();
       notifyListeners();
     }
   }
 
-  void stopStopWatch() {
+  void pauseStopWatch() {
     if (_stopwatch.isRunning) {
       _stopwatch.stop();
       notifyListeners();
+    }
+  }
+
+  void stopStopWatch() {
+    if (_stopwatch.elapsedMilliseconds > 0) {
+      _stopwatchHistory.endTime = DateTime.now();
+      _stopwatch.stop();
+      _stopwatchHistory.duration = _stopwatch.elapsedDuration;
+      _stopwatch.reset();
+      notifyListeners();
+
+      _completedStopwatchHistory = _stopwatchHistory;
+      _stopwatchHistory = StopwatchHistory();
+      _stopwatchHistories.add(_completedStopwatchHistory!);
+      _saveStopWatchHistories();
     }
   }
 
@@ -40,5 +74,23 @@ class TimeProvider extends ChangeNotifier {
     String minutes = ((milli ~/ 1000) ~/ 60).toString().padLeft(2, '0');
 
     return '$minutes:$seconds:$milliseconds';
+  }
+
+  void getStopWatchHistories({bool notify = true}) {
+    List<dynamic> swhs =
+        box.get(Constants.stopwatchHistoriesKey, defaultValue: []);
+    if (swhs.isNotEmpty) {
+      for (var swh in swhs) {
+        _stopwatchHistories.add(StopwatchHistory.fromJson(swh));
+      }
+    }
+  }
+
+  void _saveStopWatchHistories() {
+    List<Map<dynamic, dynamic>> swhs = [];
+    for (var swh in _stopwatchHistories) {
+      swhs.add(swh.toJson());
+    }
+    box.put(Constants.stopwatchHistoriesKey, swhs);
   }
 }

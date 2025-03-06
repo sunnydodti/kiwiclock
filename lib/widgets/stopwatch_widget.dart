@@ -36,25 +36,33 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     super.dispose();
   }
 
-  void _pause() {
-    _timer.cancel();
-    context.read<TimeProvider>().stopStopWatch();
-  }
-
   void _start() {
     _timer = Timer.periodic(Duration(milliseconds: 100), rebuild);
     context.read<TimeProvider>().startStopwatch();
   }
 
+  void _pause() {
+    _timer.cancel();
+    context.read<TimeProvider>().pauseStopWatch();
+  }
+
+  void _stop() {
+    _timer.cancel();
+    context.read<TimeProvider>().stopStopWatch();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      // mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Spacer(),
         Text(context.select((TimeProvider t) => t.getTimeString())),
         _buildStartButton(),
         _buildPauseButton(),
-        _buildStopButton()
+        _buildStopButton(),
+        Spacer(),
+        _buildHistoryButton(),
       ],
     );
   }
@@ -67,7 +75,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _pause,
+        onPressed: _stop,
         child: Icon(Icons.stop_outlined),
       ),
     );
@@ -97,6 +105,25 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
       child: ElevatedButton(
         onPressed: _start,
         child: Icon(Icons.play_arrow_outlined),
+      ),
+    );
+  }
+
+  _buildHistoryButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          context.read<TimeProvider>().toggleSwHView();
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.history_outlined),
+            SizedBox(width: 10),
+            Text('History')
+          ],
+        ),
       ),
     );
   }

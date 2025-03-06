@@ -48,18 +48,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(context.select((TimeProvider t) => t.getTimeString())),
-        if (context.select((TimeProvider t) => !t.stopWatch.isRunning))
-          _buildStartButton(),
-        if (context.select((TimeProvider t) => t.stopWatch.isRunning))
-          _buildPauseButton(),
-        if (context.select((TimeProvider t) => t.stopWatch.isRunning))
-          _buildStopButton()
-      ],
-    );
+    return Placeholder();
   }
 
   SizedBox _buildStopButton() {

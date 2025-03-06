@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   hive_ce: ^2.10.1
   hive_ce_flutter: ^2.2.0
+  intl: ^0.20.2
   provider: ^6.1.2
   pwa_install: ^0.0.6
   stop_watch_timer: ^3.2.1

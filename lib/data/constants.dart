@@ -7,6 +7,5 @@ class Constants {
   static String currentDataKey = 'current_data';
   static String indexKey = 'index';
 
-  
-
+  static String stopwatchHistoriesKey = 'stopwatch_histories';
 }
