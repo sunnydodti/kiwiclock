@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pwa_install/pwa_install.dart';
 
-import '../widgets/timer_widget.dart';
+import '../widgets/stopwatch_widget.dart';
 
 class StopWatchPage extends StatelessWidget {
   const StopWatchPage({
