@@ -6,7 +6,7 @@ import 'pages/home_page.dart';
 import 'service/startup_service.dart';
 
 void main() async {
-  StartupService.init();
+  await StartupService.init();
 
   runApp(MultiProvider(
     providers: [
@@ -23,10 +23,7 @@ class KiwiClock extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kiwi Clock',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: context.watch<ThemeProvider>().theme,
       home: const HomePage(),
     );
   }
