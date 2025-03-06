@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'data/provider/nav_Provider.dart';
 import 'data/provider/theme_provider.dart';
+import 'data/provider/time_provider.dart';
 import 'pages/home_page.dart';
 import 'service/startup_service.dart';
 
@@ -13,6 +14,7 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ChangeNotifierProvider(create: (_) => NavProvider()),
+      ChangeNotifierProvider(create: (_) => TimeProvider()),
     ],
     child: const KiwiClock(),
   ));
