@@ -19,7 +19,7 @@ class StopwatchHistory {
     this.views,
   });
 
-  factory StopwatchHistory.fromJson(Map<String, dynamic> json) {
+  factory StopwatchHistory.fromJson(Map<dynamic, dynamic> json) {
     return StopwatchHistory(
       id: json['id'],
       startTime: json['startTime'] != null
@@ -38,14 +38,14 @@ class StopwatchHistory {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'startTime': startTime?.toIso8601String(),
-      'endTime': endTime?.toIso8601String(),
-      'duration': duration?.inMilliseconds,
-      'createdBy': createdBy,
-      'name': name,
-      'description': description,
-      'views': views,
+      if (id != null) 'id': id,
+      if (startTime != null) 'startTime': startTime?.toIso8601String(),
+      if (endTime != null) 'endTime': endTime?.toIso8601String(),
+      if (duration != null) 'duration': duration?.inMilliseconds,
+      if (createdBy != null) 'createdBy': createdBy,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (views != null) 'views': views,
     };
   }
 }
