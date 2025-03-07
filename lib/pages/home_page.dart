@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kiwiclock/data/provider/nav_Provider.dart';
 import 'package:kiwiclock/pages/stop_watch_page.dart';
+import 'package:kiwiclock/widgets/my_appbar.dart';
+import 'package:kiwiclock/widgets/stopwatch_body.dart';
 import 'package:kiwiclock/widgets/timer_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:pwa_install/pwa_install.dart';
@@ -20,28 +22,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     NavProvider navProvider = context.watch<NavProvider>();
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: MyAppbar.build(context),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: BottomNavbar(),
       body: [
         Placeholder(),
-        StopWatchPage(),
+        StopWatchBody(),
       ][navProvider.index],
-    );
-  }
-
-  AppBar _buildAppBar() {
-    Icon icon = Theme.of(context).brightness == Brightness.light
-        ? Icon(Icons.light_mode_outlined)
-        : Icon(Icons.dark_mode_outlined);
-    return AppBar(
-      title: Text('Kiwi Clock'),
-      centerTitle: true,
-      actions: [
-        IconButton(
-            onPressed: () => context.read<ThemeProvider>().toggleTheme(),
-            icon: icon),
-      ],
     );
   }
 }
