@@ -61,9 +61,26 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         _buildStartButton(),
         _buildPauseButton(),
         _buildStopButton(),
+        _buildShareButton(),
         Spacer(),
         _buildHistoryButton(),
       ],
+    );
+  }
+
+  SizedBox _buildShareButton() {
+    if (context
+        .select((TimeProvider t) {
+          return t.stopwatchHistory == null;
+        })) {
+      return SizedBox.shrink();
+    }
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {},
+        child: Icon(Icons.share_outlined),
+      ),
     );
   }
 

@@ -38,6 +38,7 @@ class TimeProvider extends ChangeNotifier {
 
   void startStopwatch() {
     if (!_stopwatch.isRunning) {
+      _completedStopwatchHistory = null;
       _stopwatchHistory.startTime = DateTime.now();
       _stopwatch.start();
       notifyListeners();
