@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kiwiclock/data/provider/time_provider.dart';
-import 'package:kiwiclock/models/stopwatch_history.dart';
 import 'package:provider/provider.dart';
 
 import 'stopwatch_history_tile.dart';
@@ -25,7 +24,8 @@ class _StopwatchHistoryListState extends State<StopwatchHistoryList> {
               itemCount: list.length,
               itemBuilder: (BuildContext context, int index) {
                 final history = list[index];
-                return StopWatchHistoryTile(history: history, formatter: formatter);
+                return StopWatchHistoryTile(
+                    history: history, formatter: formatter);
               }),
         ),
         _buildStopwatchButton(),
