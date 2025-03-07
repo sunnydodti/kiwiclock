@@ -69,16 +69,21 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
   }
 
   SizedBox _buildShareButton() {
-    if (context
-        .select((TimeProvider t) {
-          return t.stopwatchHistory == null;
-        })) {
+    if (context.select((TimeProvider t) {
+      return t.stopwatchHistory == null;
+    })) {
       return SizedBox.shrink();
     }
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () async {
+          String result = await context.read<TimeProvider>().shareHistory();
+          if (mounted) {
+            ScaffoldMessenger.maybeOf(context)
+                ?.showSnackBar(SnackBar(content: Text(result)));
+          }
+        },
         child: Icon(Icons.share_outlined),
       ),
     );

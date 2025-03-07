@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:kiwiclock/data/constants.dart';
+import 'package:kiwiclock/service/supabase_service.dart';
 
 import '../../extensions/stopwatch.dart';
 import '../../models/stopwatch_history.dart';
 
 class TimeProvider extends ChangeNotifier {
   late Box box;
+  late SupabaseService _supabaseService;
 
   late StopWatch _stopwatch;
   bool isStopWatchCompleted = false;
@@ -19,6 +21,7 @@ class TimeProvider extends ChangeNotifier {
   TimeProvider() {
     _stopwatchHistory = StopwatchHistory();
     box = Hive.box(Constants.box);
+    _supabaseService = SupabaseService();
     _stopwatch = StopWatch();
 
     getStopWatchHistories(notify: false);
@@ -93,5 +96,11 @@ class TimeProvider extends ChangeNotifier {
       swhs.add(swh.toJson());
     }
     box.put(Constants.stopwatchHistoriesKey, swhs);
+  }
+
+  Future<String> shareHistory() async {
+    if (stopwatchHistory == null) return '';
+    final result = await _supabaseService.saveStopWatchHistory(stopwatchHistory!);
+    return result[0]['id'];
   }
 }

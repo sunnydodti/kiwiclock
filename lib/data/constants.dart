@@ -8,4 +8,6 @@ class Constants {
   static String indexKey = 'index';
 
   static String stopwatchHistoriesKey = 'stopwatch_histories';
+
+  static String stopwatchTable = 'stopwatch';
 }
