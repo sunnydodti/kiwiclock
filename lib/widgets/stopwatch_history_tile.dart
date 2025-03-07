@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../data/provider/time_provider.dart';
 import '../models/stopwatch_history.dart';
 
-class StopWatchHistoryTile extends StatelessWidget {
+class StopWatchHistoryTile extends StatefulWidget {
   const StopWatchHistoryTile({
     super.key,
     required this.history,
@@ -14,25 +17,78 @@ class StopWatchHistoryTile extends StatelessWidget {
   final DateFormat formatter;
 
   @override
+  State<StopWatchHistoryTile> createState() => _StopWatchHistoryTileState();
+}
+
+class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
+  bool extended = false;
+  @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: (history.id != null) ? Text('${history.id}') : null,
+      onTap: () => setState(() => extended = !extended),
+      title: (widget.history.id != null) ? Text('${widget.history.id}') : null,
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-              'End: ${history.endTime != null ? formatter.format(history.endTime!) : 'N/A'}'),
+              'End: ${widget.history.endTime != null ? widget.formatter.format(widget.history.endTime!) : 'N/A'}'),
           Text(
-              'Start: ${history.startTime != null ? formatter.format(history.startTime!) : 'N/A'}'),
+              'Start: ${widget.history.startTime != null ? widget.formatter.format(widget.history.startTime!) : 'N/A'}'),
+          if (extended)
+            Row(
+              children: [
+                buildDeleteButton(),
+                // buildEditButton(),
+                buildShareButton()
+              ],
+            )
         ],
       ),
       trailing: Text(elapsedText, overflow: TextOverflow.ellipsis),
     );
   }
 
+  Expanded buildDeleteButton() {
+    return Expanded(
+        child: Padding(
+      padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+      child: ElevatedButton(
+          onPressed: () {
+            setState(() => extended = false);
+            context.read<TimeProvider>().deleteStopWatchHistory(widget.history);
+          },
+          child: Icon(Icons.delete_outline)),
+    ));
+  }
+
+  Expanded buildShareButton() {
+    return Expanded(
+        child: Padding(
+      padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+      child:
+          ElevatedButton(onPressed: () {
+            if (widget.history.id != null) {
+              Share.share(widget.history.id!);
+              return;
+            }
+
+            context.read<TimeProvider>().shareCurrentHistory();
+
+          }, child: Icon(Icons.share_outlined)),
+    ));
+  }
+
+  Expanded buildEditButton() {
+    return Expanded(
+        child: Padding(
+      padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+      child: ElevatedButton(onPressed: () {}, child: Icon(Icons.edit_outlined)),
+    ));
+  }
+
   String get elapsedText {
-    if (history.duration == null) return 'N/A';
-    Duration d = history.duration!;
+    if (widget.history.duration == null) return 'N/A';
+    Duration d = widget.history.duration!;
     if (d.inMilliseconds < 1) return 'N/A';
     String text = '';
 

@@ -1,3 +1,5 @@
+import '../data/constants.dart';
+
 class StopwatchHistory {
   String? id;
   DateTime? startTime;
@@ -22,9 +24,8 @@ class StopwatchHistory {
   factory StopwatchHistory.fromJson(Map<dynamic, dynamic> json) {
     return StopwatchHistory(
       id: json['id'],
-      startTime: json['startTime'] != null
-          ? DateTime.parse(json['startTime'])
-          : null,
+      startTime:
+          json['startTime'] != null ? DateTime.parse(json['startTime']) : null,
       endTime: json['endTime'] != null ? DateTime.parse(json['endTime']) : null,
       duration: json['duration'] != null
           ? Duration(milliseconds: json['duration'])
@@ -48,4 +49,6 @@ class StopwatchHistory {
       if (views != null) 'views': views,
     };
   }
+
+  String get sharableLink => '${Constants.baseUrl}/stopwatch/$id';
 }

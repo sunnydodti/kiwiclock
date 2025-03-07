@@ -96,7 +96,7 @@ class TimeProvider extends ChangeNotifier {
     box.put(Constants.stopwatchHistoriesKey, swhs);
   }
 
-  Future<String> shareHistory() async {
+  Future<String> shareCurrentHistory() async {
     if (stopwatchHistory == null) return '';
     if (stopwatchHistory!.id != null) return stopwatchHistory!.id!;
 
@@ -107,5 +107,33 @@ class TimeProvider extends ChangeNotifier {
     _saveStopWatchHistories();
 
     return stopwatchHistory!.id!;
+  }
+
+  Future<String> shareHistory(StopwatchHistory swh) async {
+    if (swh.id != null) return swh.id!;
+
+    final result =
+        await _supabaseService.saveStopWatchHistory(stopwatchHistory!);
+    swh.id = result[0]['id'];
+    _stopwatchHistories.firstWhere((h) {
+      return h.duration == swh.duration &&
+          h.startTime == swh.startTime &&
+          h.endTime == swh.endTime;
+    }).id = swh.id;
+    _saveStopWatchHistories();
+    notifyListeners();
+    return stopwatchHistory!.id!;
+  }
+
+  void deleteStopWatchHistory(StopwatchHistory history) {
+    _stopwatchHistories.removeWhere((swh) {
+      if (swh.id != null) return swh.id == history.id;
+      return swh.duration == history.duration &&
+          swh.startTime == history.startTime &&
+          swh.endTime == history.endTime;
+    });
+
+    _saveStopWatchHistories();
+    notifyListeners();
   }
 }

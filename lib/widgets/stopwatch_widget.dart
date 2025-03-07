@@ -80,7 +80,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
         child: ElevatedButton(
           onPressed: () async {
-            String result = await context.read<TimeProvider>().shareHistory();
+            String result = await context.read<TimeProvider>().shareCurrentHistory();
             if (mounted) {
               ScaffoldMessenger.maybeOf(context)
                   ?.showSnackBar(SnackBar(content: Text(result)));

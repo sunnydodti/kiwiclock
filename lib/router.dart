@@ -42,7 +42,7 @@ class AppRouter {
         },
         routes: [
           GoRoute(
-            name: 'Stopwatch View Query',
+            name: 'Stopwatch View',
             path: '/:id',
             builder: (context, state) {
               return StopwatchViewPage(id: state.pathParameters['id']!);

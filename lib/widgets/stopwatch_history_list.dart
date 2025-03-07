@@ -15,7 +15,7 @@ class StopwatchHistoryList extends StatefulWidget {
 class _StopwatchHistoryListState extends State<StopwatchHistoryList> {
   @override
   Widget build(BuildContext context) {
-    final list = context.select((TimeProvider t) => t.stopwatchHistories);
+    final list = context.watch<TimeProvider>().stopwatchHistories;
     final DateFormat formatter = DateFormat('yyyy-MM-dd:HH:mm:ss');
     return Column(
       children: [
