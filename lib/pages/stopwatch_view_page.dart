@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:kiwiclock/models/stopwatch_history.dart';
@@ -63,7 +65,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
             final stopwatchData = snapshot.data!;
             return buildDetails(stopwatchData);
           } else {
-            return const Center(child: Text('No stopwatch data found'));
+            return Center(child: Text('No data found for id: ${widget.id}}'));
           }
         },
       ),
@@ -72,40 +74,39 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
 
   Center buildDetails(StopwatchHistory stopwatchData) {
     return Center(
-      // Center the card
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min, // Added for better layout
-            children: [
-              Text(
-                stopwatchData.name ?? 'Unnamed Stopwatch',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(stopwatchData.description ?? 'No description'),
-              const SizedBox(height: 16),
-              _buildDataTile(
-                  'Duration', _formatDuration(stopwatchData.duration!)),
-              _buildDataTile(
-                  'Start Time',
-                  DateFormat('yyyy-MM-dd HH:mm:ss')
-                      .format(stopwatchData.startTime!)),
-              _buildDataTile(
-                  'End Time',
-                  DateFormat('yyyy-MM-dd HH:mm:ss')
-                      .format(stopwatchData.endTime!)),
-              _buildDataTile(
-                  'Created By', stopwatchData.createdBy ?? 'Unknown'),
-              _buildDataTile('Views', (stopwatchData.views ?? 0).toString()),
-            ],
+      child: SizedBox(
+        width: min(350, MediaQuery.of(context).size.width * 0.8),
+        child: Card(
+          elevation: 4,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min, // Added for better layout
+              children: [
+                Text(
+                  stopwatchData.name ?? 'Unnamed Stopwatch',
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(stopwatchData.description ?? 'No description'),
+                const SizedBox(height: 16),
+                _buildDataTile(
+                    'Duration', _formatDuration(stopwatchData.duration!)),
+                _buildDataTile(
+                    'Start',
+                    DateFormat('yyyy-MM-dd HH:mm:ss')
+                        .format(stopwatchData.startTime!)),
+                _buildDataTile(
+                    'End',
+                    DateFormat('yyyy-MM-dd HH:mm:ss')
+                        .format(stopwatchData.endTime!)),
+                _buildDataTile(
+                    'Created By', stopwatchData.createdBy ?? 'Unknown'),
+                _buildDataTile('Views', (stopwatchData.views ?? 0).toString()),
+              ],
+            ),
           ),
         ),
       ),
@@ -117,6 +118,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
           Text(value),
