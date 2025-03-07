@@ -80,7 +80,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         onPressed: () async {
           String result = await context.read<TimeProvider>().shareHistory();
           if (mounted) {
-            ScaffoldMessenger.maybeOf(context)
+            ScaffoldMessenger. maybeOf(context)
                 ?.showSnackBar(SnackBar(content: Text(result)));
           }
         },

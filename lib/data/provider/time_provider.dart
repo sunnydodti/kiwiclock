@@ -17,7 +17,6 @@ class TimeProvider extends ChangeNotifier {
   late List<StopwatchHistory> _stopwatchHistories = [];
   bool _isSwHView = false;
 
-
   TimeProvider() {
     _stopwatchHistory = StopwatchHistory();
     box = Hive.box(Constants.box);
@@ -37,7 +36,6 @@ class TimeProvider extends ChangeNotifier {
     _isSwHView = !_isSwHView;
     notifyListeners();
   }
-
 
   void startStopwatch() {
     if (!_stopwatch.isRunning) {
@@ -100,7 +98,14 @@ class TimeProvider extends ChangeNotifier {
 
   Future<String> shareHistory() async {
     if (stopwatchHistory == null) return '';
-    final result = await _supabaseService.saveStopWatchHistory(stopwatchHistory!);
-    return result[0]['id'];
+    if (stopwatchHistory!.id != null) return stopwatchHistory!.id!;
+
+    final result =
+        await _supabaseService.saveStopWatchHistory(stopwatchHistory!);
+    _completedStopwatchHistory!.id = result[0]['id'];
+    _stopwatchHistories.last = _completedStopwatchHistory!;
+    _saveStopWatchHistories();
+
+    return stopwatchHistory!.id!;
   }
 }
