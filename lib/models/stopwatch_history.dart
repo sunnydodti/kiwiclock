@@ -3,35 +3,49 @@ class StopwatchHistory {
   DateTime? startTime;
   DateTime? endTime;
   Duration? duration;
+  String? createdBy;
+  String? name;
+  String? description;
+  int? views;
 
   StopwatchHistory({
     this.startTime,
     this.endTime,
     this.duration,
     this.id,
+    this.createdBy,
+    this.name,
+    this.description,
+    this.views,
   });
 
-  factory StopwatchHistory.fromJson(Map<dynamic, dynamic> json) {
+  factory StopwatchHistory.fromJson(Map<String, dynamic> json) {
     return StopwatchHistory(
-      id: (json.containsKey('id')) ? json['id'] : null,
-      startTime: (json.containsKey('startTime'))
+      id: json['id'],
+      startTime: json['startTime'] != null
           ? DateTime.parse(json['startTime'])
           : null,
-      endTime: (json.containsKey('endTime'))
-          ? DateTime.parse(json['endTime'])
-          : null,
-      duration: (json.containsKey('endTime'))
+      endTime: json['endTime'] != null ? DateTime.parse(json['endTime']) : null,
+      duration: json['duration'] != null
           ? Duration(milliseconds: json['duration'])
           : null,
+      createdBy: json['createdBy'],
+      name: json['name'],
+      description: json['description'],
+      views: json['views'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
-      if (startTime != null) 'startTime': startTime!.toIso8601String(),
-      if (endTime != null) 'endTime': endTime!.toIso8601String(),
-      if (duration != null) 'duration': duration!.inMilliseconds,
+      'id': id,
+      'startTime': startTime?.toIso8601String(),
+      'endTime': endTime?.toIso8601String(),
+      'duration': duration?.inMilliseconds,
+      'createdBy': createdBy,
+      'name': name,
+      'description': description,
+      'views': views,
     };
   }
 }
