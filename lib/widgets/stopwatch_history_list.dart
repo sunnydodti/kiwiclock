@@ -36,17 +36,20 @@ class _StopwatchHistoryListState extends State<StopwatchHistoryList> {
   _buildStopwatchButton() {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          context.read<TimeProvider>().toggleSwHView();
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.timer_outlined),
-            SizedBox(width: 10),
-            Text('Stopwatch')
-          ],
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: ElevatedButton(
+          onPressed: () {
+            context.read<TimeProvider>().toggleSwHView();
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.timer_outlined),
+              SizedBox(width: 10),
+              Text('Stopwatch')
+            ],
+          ),
         ),
       ),
     );

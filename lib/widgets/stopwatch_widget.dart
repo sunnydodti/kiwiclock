@@ -76,15 +76,18 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     }
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () async {
-          String result = await context.read<TimeProvider>().shareHistory();
-          if (mounted) {
-            ScaffoldMessenger. maybeOf(context)
-                ?.showSnackBar(SnackBar(content: Text(result)));
-          }
-        },
-        child: Icon(Icons.share_outlined),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: ElevatedButton(
+          onPressed: () async {
+            String result = await context.read<TimeProvider>().shareHistory();
+            if (mounted) {
+              ScaffoldMessenger.maybeOf(context)
+                  ?.showSnackBar(SnackBar(content: Text(result)));
+            }
+          },
+          child: Icon(Icons.share_outlined),
+        ),
       ),
     );
   }
@@ -96,9 +99,12 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     }
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _stop,
-        child: Icon(Icons.stop_outlined),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: ElevatedButton(
+          onPressed: _stop,
+          child: Icon(Icons.stop_outlined),
+        ),
       ),
     );
   }
@@ -110,9 +116,12 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
 
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _pause,
-        child: Icon(Icons.pause_outlined),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: ElevatedButton(
+          onPressed: _pause,
+          child: Icon(Icons.pause_outlined),
+        ),
       ),
     );
   }
@@ -124,9 +133,12 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
 
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _start,
-        child: Icon(Icons.play_arrow_outlined),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: ElevatedButton(
+          onPressed: _start,
+          child: Icon(Icons.play_arrow_outlined),
+        ),
       ),
     );
   }
@@ -134,17 +146,20 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
   _buildHistoryButton() {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          context.read<TimeProvider>().toggleSwHView();
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.history_outlined),
-            SizedBox(width: 10),
-            Text('History')
-          ],
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: ElevatedButton(
+          onPressed: () {
+            context.read<TimeProvider>().toggleSwHView();
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.history_outlined),
+              SizedBox(width: 10),
+              Text('History')
+            ],
+          ),
         ),
       ),
     );

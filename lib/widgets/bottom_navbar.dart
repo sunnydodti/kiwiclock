@@ -11,6 +11,7 @@ class BottomNavbar extends StatelessWidget {
     return Consumer<NavProvider>(
       builder: (BuildContext context, provider, Widget? child) {
         return NavigationBar(
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
           selectedIndex: provider.index,
           indicatorColor: Theme.of(context).colorScheme.primary,
           onDestinationSelected: provider.setIndex,
