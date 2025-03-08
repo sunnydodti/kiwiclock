@@ -136,4 +136,21 @@ class TimeProvider extends ChangeNotifier {
     _saveStopWatchHistories();
     notifyListeners();
   }
+
+  Future<StopwatchHistory?> getSwhById(String id) async {
+    final result = await _supabaseService.getStopWatchHistory(id);
+    
+    if (result.isEmpty) return null;
+    return StopwatchHistory.fromJson(result);
+
+    // swh.id = result[0]['id'];
+    // _stopwatchHistories.firstWhere((h) {
+    //   return h.duration == swh.duration &&
+    //       h.startTime == swh.startTime &&
+    //       h.endTime == swh.endTime;
+    // }).id = swh.id;
+    // _saveStopWatchHistories();
+    // notifyListeners();
+    // return stopwatchHistory!.id!;
+  }
 }

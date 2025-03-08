@@ -18,6 +18,7 @@ class SupabaseService {
     return Supabase.instance.client
       .from(Constants.stopwatchTable)
       .select('*')
-      .eq('id', id);
+      .eq('id', id)
+      .maybeSingle();
   }
 }

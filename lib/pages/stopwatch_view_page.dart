@@ -1,10 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:kiwiclock/data/provider/time_provider.dart';
 import 'package:kiwiclock/models/stopwatch_history.dart';
 import 'package:kiwiclock/widgets/clock_loading.dart';
 import 'package:kiwiclock/widgets/my_appbar.dart';
+import 'package:kiwiclock/widgets/my_button.dart';
+import 'package:provider/provider.dart';
 
 class StopwatchViewPage extends StatefulWidget {
   final String id;
@@ -16,30 +20,22 @@ class StopwatchViewPage extends StatefulWidget {
 }
 
 class _StopwatchViewPageState extends State<StopwatchViewPage> {
-  Future<StopwatchHistory?> _stopwatchDataFuture = Future.value(null);
+  StopwatchHistory? _stopwatchData;
 
   @override
   void initState() {
     super.initState();
-    _stopwatchDataFuture = _loadStopwatchData();
   }
 
   Future<StopwatchHistory?> _loadStopwatchData() async {
     try {
-      // Replace with your actual data fetching logic.  This is a placeholder.
+      if (_stopwatchData != null) return _stopwatchData;
       await Future.delayed(const Duration(seconds: 1));
-      return StopwatchHistory(
-        id: widget.id,
-        startTime: DateTime.now().subtract(const Duration(seconds: 60)),
-        endTime: DateTime.now(),
-        duration: const Duration(seconds: 60),
-        createdBy: 'Test User',
-        name: 'My Stopwatch',
-        description: 'A test stopwatch entry',
-        views: 10,
-      );
+      StopwatchHistory? swh =
+          await context.read<TimeProvider>().getSwhById(widget.id);
+      _stopwatchData = swh;
+      return swh;
     } catch (e) {
-      print('Error loading stopwatch data: $e');
       return null;
     }
   }
@@ -65,7 +61,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
               padding: const EdgeInsets.all(16.0),
               child: Center(
                 child: FutureBuilder<StopwatchHistory?>(
-                  future: _stopwatchDataFuture,
+                  future: _loadStopwatchData(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return ClockLoading();
@@ -75,7 +71,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
                       final stopwatchData = snapshot.data!;
                       return buildDetails(stopwatchData);
                     } else {
-                      return Text('No data found for id: ${widget.id}}');
+                      return buildNoDataInfo(context);
                     }
                   },
                 ),
@@ -84,6 +80,30 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Column buildNoDataInfo(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'The data is so shy, it didn\'t show up',
+          maxLines: 2,
+          overflow: TextOverflow.fade,
+        ),
+        SizedBox(height: 16),
+        MyButton(
+            onPressed: () => context.goNamed('Home'),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Explore'),
+                SizedBox(width: 8),
+                Icon(Icons.launch_outlined),
+              ],
+            ))
+      ],
     );
   }
 
