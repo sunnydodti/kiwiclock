@@ -15,35 +15,35 @@ class TimeProvider extends ChangeNotifier {
 
   late StopWatch _stopwatch;
   bool isStopWatchCompleted = false;
-  late StopwatchHistory _stopwatchHistory;
-  StopwatchHistory? _completedStopwatchHistory;
-  late List<StopwatchHistory> _stopwatchHistories = [];
-  bool _isSwHView = false;
+  late StopwatchEvent _stopwatchEvent;
+  StopwatchEvent? _completedStopwatchEvent;
+  late List<StopwatchEvent> _stopwatchEvents = [];
+  bool _isSweView = false;
 
   TimeProvider() {
-    _stopwatchHistory = StopwatchHistory();
+    _stopwatchEvent = StopwatchEvent();
     box = Hive.box(Constants.box);
     _supabaseService = SupabaseService();
     _stopwatch = StopWatch();
 
-    getStopWatchHistories(notify: false);
+    getStopWatchEvents(notify: false);
     // _stopwatch.
   }
 
   StopWatch get stopWatch => _stopwatch;
-  StopwatchHistory? get stopwatchHistory => _completedStopwatchHistory;
-  bool get isSwHView => _isSwHView;
-  List<StopwatchHistory> get stopwatchHistories => _stopwatchHistories;
+  StopwatchEvent? get stopwatchEvent => _completedStopwatchEvent;
+  bool get isSweView => _isSweView;
+  List<StopwatchEvent> get stopwatchEvents => _stopwatchEvents;
 
-  void toggleSwHView() {
-    _isSwHView = !_isSwHView;
+  void toggleSweView() {
+    _isSweView = !_isSweView;
     notifyListeners();
   }
 
   void startStopwatch() {
     if (!_stopwatch.isRunning) {
-      _completedStopwatchHistory = null;
-      _stopwatchHistory.startTime = DateTime.now();
+      _completedStopwatchEvent = null;
+      _stopwatchEvent.startTime = DateTime.now();
       _stopwatch.start();
       notifyListeners();
     }
@@ -58,16 +58,16 @@ class TimeProvider extends ChangeNotifier {
 
   void stopStopWatch() {
     if (_stopwatch.elapsedMilliseconds > 0) {
-      _stopwatchHistory.endTime = DateTime.now();
+      _stopwatchEvent.endTime = DateTime.now();
       _stopwatch.stop();
-      _stopwatchHistory.duration = _stopwatch.elapsedDuration;
+      _stopwatchEvent.duration = _stopwatch.elapsedDuration;
       _stopwatch.reset();
       notifyListeners();
 
-      _completedStopwatchHistory = _stopwatchHistory;
-      _stopwatchHistory = StopwatchHistory();
-      _stopwatchHistories.add(_completedStopwatchHistory!);
-      _saveStopWatchHistories();
+      _completedStopwatchEvent = _stopwatchEvent;
+      _stopwatchEvent = StopwatchEvent();
+      _stopwatchEvents.add(_completedStopwatchEvent!);
+      _saveStopWatchEvents();
     }
   }
 
@@ -81,76 +81,76 @@ class TimeProvider extends ChangeNotifier {
     return '$minutes:$seconds:$milliseconds';
   }
 
-  void getStopWatchHistories({bool notify = true}) {
-    List<dynamic> swhs =
-        box.get(Constants.stopwatchHistoriesKey, defaultValue: []);
-    if (swhs.isNotEmpty) {
-      for (var swh in swhs) {
-        _stopwatchHistories.add(StopwatchHistory.fromJson(swh));
+  void getStopWatchEvents({bool notify = true}) {
+    List<dynamic> swes =
+        box.get(Constants.stopwatchEventsKey, defaultValue: []);
+    if (swes.isNotEmpty) {
+      for (var swe in swes) {
+        _stopwatchEvents.add(StopwatchEvent.fromJson(swe));
       }
     }
   }
 
-  void _saveStopWatchHistories() {
-    List<Map<dynamic, dynamic>> swhs = [];
-    for (var swh in _stopwatchHistories) {
-      swhs.add(swh.toJson());
+  void _saveStopWatchEvents() {
+    List<Map<dynamic, dynamic>> swes = [];
+    for (var swe in _stopwatchEvents) {
+      swes.add(swe.toJson());
     }
-    box.put(Constants.stopwatchHistoriesKey, swhs);
+    box.put(Constants.stopwatchEventsKey, swes);
   }
 
-  Future<String> shareCurrentHistory() async {
-    if (stopwatchHistory == null) return '';
-    if (stopwatchHistory!.id != null) return stopwatchHistory!.id!;
+  Future<String> shareCurrentSwe() async {
+    if (stopwatchEvent == null) return '';
+    if (stopwatchEvent!.id != null) return stopwatchEvent!.id!;
 
     final result =
-        await _supabaseService.saveStopWatchHistory(stopwatchHistory!);
-    _completedStopwatchHistory!.id = result[0]['id'];
-    _stopwatchHistories.last = _completedStopwatchHistory!;
-    _saveStopWatchHistories();
+        await _supabaseService.saveStopWatchEvent(stopwatchEvent!);
+    _completedStopwatchEvent!.id = result[0]['id'];
+    _stopwatchEvents.last = _completedStopwatchEvent!;
+    _saveStopWatchEvents();
     notifyListeners();
-    return stopwatchHistory!.id!;
+    return stopwatchEvent!.id!;
   }
 
-  Future<String> shareHistory(StopwatchHistory swh) async {
-    if (swh.id != null) return swh.id!;
+  Future<String> shareSwe(StopwatchEvent swe) async {
+    if (swe.id != null) return swe.id!;
 
     final result =
-        await _supabaseService.saveStopWatchHistory(stopwatchHistory!);
-    swh.id = result[0]['id'];
-    _stopwatchHistories.firstWhere((h) {
-      return h.duration == swh.duration &&
-          h.startTime == swh.startTime &&
-          h.endTime == swh.endTime;
-    }).id = swh.id;
-    _saveStopWatchHistories();
+        await _supabaseService.saveStopWatchEvent(stopwatchEvent!);
+    swe.id = result[0]['id'];
+    _stopwatchEvents.firstWhere((h) {
+      return h.duration == swe.duration &&
+          h.startTime == swe.startTime &&
+          h.endTime == swe.endTime;
+    }).id = swe.id;
+    _saveStopWatchEvents();
     notifyListeners();
-    return stopwatchHistory!.id!;
+    return stopwatchEvent!.id!;
   }
 
-  void deleteStopWatchHistory(StopwatchHistory history) {
-    _stopwatchHistories.removeWhere((swh) {
-      if (swh.id != null) return swh.id == history.id;
-      return swh.duration == history.duration &&
-          swh.startTime == history.startTime &&
-          swh.endTime == history.endTime;
+  void deleteStopWatchEvent(StopwatchEvent event) {
+    _stopwatchEvents.removeWhere((swe) {
+      if (swe.id != null) return swe.id == event.id;
+      return swe.duration == event.duration &&
+          swe.startTime == event.startTime &&
+          swe.endTime == event.endTime;
     });
 
-    _saveStopWatchHistories();
+    _saveStopWatchEvents();
     notifyListeners();
   }
 
-  Future<StopwatchHistory?> getSwhById(String id) async {
-    final result = await _supabaseService.getStopWatchHistory(id);
+  Future<StopwatchEvent?> getSweById(String id) async {
+    final result = await _supabaseService.getStopWatchEventById(id);
 
     if (result.isEmpty) return null;
-    return StopwatchHistory.fromJson(result);
+    return StopwatchEvent.fromJson(result);
   }
 
-  StreamSubscription<SupabaseStreamEvent> streamStopWatchHistoryById(
+  StreamSubscription<SupabaseStreamEvent> streamStopWatchEventById(
     String id,
     Function(List<Map<String, dynamic>>) onDataReceived,
   ) {
-    return _supabaseService.streamStopWatchHistoryById(id, onDataReceived);
+    return _supabaseService.streamStopWatchEventById(id, onDataReceived);
   }
 }

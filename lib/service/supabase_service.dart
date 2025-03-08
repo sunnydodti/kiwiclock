@@ -8,14 +8,14 @@ import '../data/constants.dart';
 class SupabaseService {
   SupabaseService();
 
-  Future saveStopWatchHistory(StopwatchHistory swh) async {
+  Future saveStopWatchEvent(StopwatchEvent swe) async {
     return await Supabase.instance.client
         .from(Constants.stopwatchTable)
-        .insert(swh.toJson())
+        .insert(swe.toJson())
         .select('*');
   }
 
-  Future getStopWatchHistory(String id) async {
+  Future getStopWatchEventById(String id) async {
     return Supabase.instance.client
         .from(Constants.stopwatchTable)
         .select('*')
@@ -23,7 +23,7 @@ class SupabaseService {
         .maybeSingle();
   }
 
-  StreamSubscription<SupabaseStreamEvent> streamStopWatchHistoryById(
+  StreamSubscription<SupabaseStreamEvent> streamStopWatchEventById(
     String id,
     Function(List<Map<String, dynamic>>) onDataReceived,
   ) {

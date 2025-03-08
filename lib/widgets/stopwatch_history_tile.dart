@@ -10,21 +10,21 @@ import '../models/stopwatch_history.dart';
 import 'colored_text_box.dart';
 import 'my_button.dart';
 
-class StopWatchHistoryTile extends StatefulWidget {
-  const StopWatchHistoryTile({
+class StopWatchEventTile extends StatefulWidget {
+  const StopWatchEventTile({
     super.key,
-    required this.history,
+    required this.event,
     required this.formatter,
   });
 
-  final StopwatchHistory history;
+  final StopwatchEvent event;
   final DateFormat formatter;
 
   @override
-  State<StopWatchHistoryTile> createState() => _StopWatchHistoryTileState();
+  State<StopWatchEventTile> createState() => _StopWatchEventTileState();
 }
 
-class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
+class _StopWatchEventTileState extends State<StopWatchEventTile> {
   bool extended = false;
   @override
   Widget build(BuildContext context) {
@@ -36,20 +36,20 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
           color: (extended) ? color.withAlpha(20) : null,
           child: ListTile(
             onTap: () => setState(() => extended = !extended),
-            title: (widget.history.id != null)
-                ? Text('${widget.history.id}')
+            title: (widget.event.id != null)
+                ? Text('${widget.event.id}')
                 : null,
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    'End: ${widget.history.endTime != null ? widget.formatter.format(widget.history.endTime!) : 'N/A'}'),
+                    'End: ${widget.event.endTime != null ? widget.formatter.format(widget.event.endTime!) : 'N/A'}'),
                 Text(
-                    'Start: ${widget.history.startTime != null ? widget.formatter.format(widget.history.startTime!) : 'N/A'}'),
+                    'Start: ${widget.event.startTime != null ? widget.formatter.format(widget.event.startTime!) : 'N/A'}'),
               ],
             ),
             trailing: ColoredTextBox(
-              text: widget.history.elapsedText,
+              text: widget.event.elapsedText,
               color: Theme.of(context).colorScheme.primary,
               upperCase: false,
             ),
@@ -75,7 +75,7 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
       child: ElevatedButton(
           onPressed: () {
             setState(() => extended = false);
-            context.read<TimeProvider>().deleteStopWatchHistory(widget.history);
+            context.read<TimeProvider>().deleteStopWatchEvent(widget.event);
           },
           child: Icon(Icons.delete_outline)),
     ));
@@ -87,10 +87,10 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
       padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
       child: ElevatedButton(
           onPressed: () async {
-            widget.history.id ??=
-                await context.read<TimeProvider>().shareHistory(widget.history);
+            widget.event.id ??=
+                await context.read<TimeProvider>().shareSwe(widget.event);
 
-            Share.share(widget.history.sharableLink);
+            Share.share(widget.event.sharableLink);
           },
           child: Icon(Icons.share_outlined)),
     ));
@@ -105,13 +105,13 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
   }
 
   Widget _buildCopyLinkButton() {
-    if (widget.history.id == null) return SizedBox.shrink();
-    String link = widget.history.link;
+    if (widget.event.id == null) return SizedBox.shrink();
+    String link = widget.event.link;
     return MyButton(
       onPressed: () {
         context.goNamed(
           'Stopwatch View',
-          pathParameters: {'id': widget.history.id!},
+          pathParameters: {'id': widget.event.id!},
         );
       },
       edgeInsets: EdgeInsets.only(left: 8, right: 8, top: 8),
@@ -123,7 +123,7 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
           GestureDetector(
               onTap: () {
                 Clipboard.setData(
-                    ClipboardData(text: widget.history.sharableLink));
+                    ClipboardData(text: widget.event.sharableLink));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Copied to clipboard'),

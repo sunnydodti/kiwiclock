@@ -76,20 +76,20 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
 
   Widget _buildLinkButton() {
     if (context.select((TimeProvider t) {
-      return t.stopwatchHistory?.id == null;
+      return t.stopwatchEvent?.id == null;
     })) {
       return SizedBox.shrink();
     }
     String link = context.select((TimeProvider t) {
-      return t.stopwatchHistory!.link;
+      return t.stopwatchEvent!.link;
     });
     String sharableLink = context.select((TimeProvider t) {
-      return t.stopwatchHistory!.sharableLink;
+      return t.stopwatchEvent!.sharableLink;
     });
     return MyButton(
       onPressed: () {
         print(link);
-        String id = context.read<TimeProvider>().stopwatchHistory!.id!;
+        String id = context.read<TimeProvider>().stopwatchEvent!.id!;
         context.goNamed(
           'Stopwatch View',
           pathParameters: {'id': id},
@@ -118,7 +118,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
 
   SizedBox _buildShareButton() {
     if (context.select((TimeProvider t) {
-      return t.stopwatchHistory == null;
+      return t.stopwatchEvent == null;
     })) {
       return SizedBox.shrink();
     }
@@ -129,10 +129,10 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         child: ElevatedButton(
           onPressed: () async {
             String result =
-                await context.read<TimeProvider>().shareCurrentHistory();
+                await context.read<TimeProvider>().shareCurrentSwe();
             if (mounted) {
               Share.share(
-                  context.read<TimeProvider>().stopwatchHistory!.sharableLink);
+                  context.read<TimeProvider>().stopwatchEvent!.sharableLink);
             }
           },
           child: Icon(Icons.share_outlined),
@@ -199,7 +199,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
         child: ElevatedButton(
           onPressed: () {
-            context.read<TimeProvider>().toggleSwHView();
+            context.read<TimeProvider>().toggleSweView();
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

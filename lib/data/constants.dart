@@ -9,7 +9,7 @@ class Constants {
   static String currentDataKey = 'current_data';
   static String indexKey = 'index';
 
-  static String stopwatchHistoriesKey = 'stopwatch_histories';
+  static String stopwatchEventsKey = 'stopwatch_histories';
 
   static String stopwatchTable = 'stopwatch';
 

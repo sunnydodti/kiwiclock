@@ -1,28 +1,28 @@
 import '../data/constants.dart';
 
-class StopwatchHistory {
+class StopwatchEvent {
   String? id;
   DateTime? startTime;
   DateTime? endTime;
   Duration? duration;
-  String? createdBy;
+  String? author;
   String? name;
   String? description;
   int? views;
 
-  StopwatchHistory({
+  StopwatchEvent({
     this.startTime,
     this.endTime,
     this.duration,
     this.id,
-    this.createdBy,
+    this.author,
     this.name,
     this.description,
     this.views,
   });
 
-  factory StopwatchHistory.fromJson(Map<dynamic, dynamic> json) {
-    return StopwatchHistory(
+  factory StopwatchEvent.fromJson(Map<dynamic, dynamic> json) {
+    return StopwatchEvent(
       id: json['id'],
       startTime:
           json['startTime'] != null ? DateTime.parse(json['startTime']) : null,
@@ -30,7 +30,7 @@ class StopwatchHistory {
       duration: json['duration'] != null
           ? Duration(milliseconds: json['duration'])
           : null,
-      createdBy: json['createdBy'],
+      author: json['createdBy'],
       name: json['name'],
       description: json['description'],
       views: json['views'],
@@ -43,7 +43,7 @@ class StopwatchHistory {
       if (startTime != null) 'startTime': startTime?.toIso8601String(),
       if (endTime != null) 'endTime': endTime?.toIso8601String(),
       if (duration != null) 'duration': duration?.inMilliseconds,
-      if (createdBy != null) 'createdBy': createdBy,
+      if (author != null) 'createdBy': author,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (views != null) 'views': views,
@@ -55,7 +55,8 @@ class StopwatchHistory {
 
   String get elapsedText {
     if (duration == null) return 'N/A';
-    Duration d = duration!;
+    Duration d = 
+    duration!;
     if (d.inMilliseconds < 1) return 'N/A';
     String text = '';
 

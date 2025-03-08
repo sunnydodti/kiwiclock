@@ -18,10 +18,10 @@ class StopWatchPage extends StatelessWidget {
       appBar: MyAppbar.build(context, title: 'Stopwatch', back: true),
       body: Column(
         children: [
-          if (context.select((TimeProvider t) => !t.isSwHView))
+          if (context.select((TimeProvider t) => !t.isSweView))
             Expanded(child: StopWatchWidget()),
-          if (context.select((TimeProvider t) => t.isSwHView))
-            Expanded(child: StopwatchHistoryList()),
+          if (context.select((TimeProvider t) => t.isSweView))
+            Expanded(child: StopwatchEventList()),
           if (PWAInstall().installPromptEnabled)
             ElevatedButton(
               onPressed: () {

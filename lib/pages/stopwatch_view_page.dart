@@ -24,7 +24,7 @@ class StopwatchViewPage extends StatefulWidget {
 }
 
 class _StopwatchViewPageState extends State<StopwatchViewPage> {
-  StopwatchHistory? _stopwatchData;
+  StopwatchEvent? _stopwatchData;
   late StreamSubscription<SupabaseStreamEvent> streamSubscription;
 
   @override
@@ -39,13 +39,13 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
     super.dispose();
   }
 
-  Future<StopwatchHistory?> _loadStopwatchData() async {
+  Future<StopwatchEvent?> _loadStopwatchData() async {
     try {
       if (_stopwatchData != null) return _stopwatchData;
-      StopwatchHistory? swh =
-          await context.read<TimeProvider>().getSwhById(widget.id);
-      _stopwatchData = swh;
-      return swh;
+      StopwatchEvent? swe =
+          await context.read<TimeProvider>().getSweById(widget.id);
+      _stopwatchData = swe;
+      return swe;
     } catch (e) {
       return null;
     }
@@ -71,7 +71,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(
-                child: FutureBuilder<StopwatchHistory?>(
+                child: FutureBuilder<StopwatchEvent?>(
                   future: _loadStopwatchData(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -117,30 +117,38 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
     );
   }
 
-  Widget buildDetails(StopwatchHistory stopwatchData) {
+  Widget buildDetails(StopwatchEvent event) {
+    if (event.endTime == null) {
+      return _buildOngoingEvent(event);
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min, // Added for better layout
+      mainAxisSize: MainAxisSize.min,
       children: [
-        buildTitle(stopwatchData),
+        buildTitle(event),
         Divider(thickness: .2),
-        if (stopwatchData.description != null) Text(stopwatchData.description!),
+        if (event.description != null) Text(event.description!),
         const SizedBox(height: 16),
-        _buildDataTile('Duration', _formatDuration(stopwatchData.duration!)),
-        _buildDataTile('Start',
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(stopwatchData.startTime!)),
-        _buildDataTile('End',
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(stopwatchData.endTime!)),
-        if (stopwatchData.createdBy != null)
-          _buildDataTile('Created By', stopwatchData.createdBy!),
-        _buildDataTile('Views', (stopwatchData.views ?? 0).toString()),
+        if (event.duration != null)
+          _buildDataTile('Duration', _formatDuration(event.duration!)),
+        if (event.startTime != null)
+          _buildDataTile(
+              'Start',
+              DateFormat('yyyy-MM-dd HH:mm:ss')
+                  .format(event.startTime!)),
+        if (event.endTime != null)
+          _buildDataTile('End',
+              DateFormat('yyyy-MM-dd HH:mm:ss').format(event.endTime!)),
+        if (event.author != null)
+          _buildDataTile('Created By', event.author!),
+        _buildDataTile('Views', (event.views ?? 0).toString()),
       ],
     );
   }
 
-  Text buildTitle(StopwatchHistory stopwatchData) {
+  Text buildTitle(StopwatchEvent event) {
     return Text(
-      stopwatchData.name ?? 'Stopwatch',
+      event.name ?? 'Event',
       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       maxLines: 3,
       overflow: TextOverflow.fade,
@@ -164,14 +172,22 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
   void _subscribeToUpdates() {
     streamSubscription = context
         .read<TimeProvider>()
-        .streamStopWatchHistoryById(widget.id, onDataReceived);
+        .streamStopWatchEventById(widget.id, onDataReceived);
   }
 
   onDataReceived(List<Map<String, dynamic>> data) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('${data[0]}')));
     setState(() {
-      _stopwatchData = StopwatchHistory.fromJson  (data[0]);
+      _stopwatchData = StopwatchEvent.fromJson(data[0]);
     });
+  }
+
+  Widget _buildOngoingEvent(StopwatchEvent event) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [ClockLoading(size: 30)],
+    );
   }
 }

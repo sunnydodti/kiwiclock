@@ -5,17 +5,17 @@ import 'package:provider/provider.dart';
 
 import 'stopwatch_history_tile.dart';
 
-class StopwatchHistoryList extends StatefulWidget {
-  const StopwatchHistoryList({super.key});
+class StopwatchEventList extends StatefulWidget {
+  const StopwatchEventList({super.key});
 
   @override
-  State<StopwatchHistoryList> createState() => _StopwatchHistoryListState();
+  State<StopwatchEventList> createState() => _StopwatchEventListState();
 }
 
-class _StopwatchHistoryListState extends State<StopwatchHistoryList> {
+class _StopwatchEventListState extends State<StopwatchEventList> {
   @override
   Widget build(BuildContext context) {
-    final list = context.watch<TimeProvider>().stopwatchHistories;
+    final list = context.watch<TimeProvider>().stopwatchEvents;
     final DateFormat formatter = DateFormat('yyyy-MM-dd:HH:mm:ss');
     return Column(
       children: [
@@ -23,9 +23,9 @@ class _StopwatchHistoryListState extends State<StopwatchHistoryList> {
           child: ListView.builder(
               itemCount: list.length,
               itemBuilder: (BuildContext context, int index) {
-                final history = list[index];
-                return StopWatchHistoryTile(
-                    history: history, formatter: formatter);
+                final event = list[index];
+                return StopWatchEventTile(
+                    event: event, formatter: formatter);
               }),
         ),
         _buildStopwatchButton(),
@@ -40,7 +40,7 @@ class _StopwatchHistoryListState extends State<StopwatchHistoryList> {
         padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
         child: ElevatedButton(
           onPressed: () {
-            context.read<TimeProvider>().toggleSwHView();
+            context.read<TimeProvider>().toggleSweView();
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
