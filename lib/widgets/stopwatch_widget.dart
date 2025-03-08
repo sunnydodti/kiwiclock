@@ -82,6 +82,9 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     String link = context.select((TimeProvider t) {
       return t.stopwatchHistory!.link;
     });
+    String sharableLink = context.select((TimeProvider t) {
+      return t.stopwatchHistory!.sharableLink;
+    });
     return MyButton(
       onPressed: () {},
       child: Row(
@@ -90,7 +93,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
           Expanded(child: Text(link, overflow: TextOverflow.ellipsis, maxLines: 2)),
           GestureDetector(
               onTap: () {
-                Clipboard.setData(ClipboardData(text: link));
+                Clipboard.setData(ClipboardData(text: sharableLink));
               },
               child: Icon(Icons.copy_outlined)),
         ],

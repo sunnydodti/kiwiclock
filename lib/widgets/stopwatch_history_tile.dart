@@ -114,7 +114,8 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
               child: Text(link, overflow: TextOverflow.ellipsis, maxLines: 2)),
           GestureDetector(
               onTap: () {
-                Clipboard.setData(ClipboardData(text: link));
+                Clipboard.setData(
+                    ClipboardData(text: widget.history.sharableLink));
               },
               child: Icon(Icons.copy_outlined)),
         ],
