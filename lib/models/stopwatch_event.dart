@@ -55,8 +55,7 @@ class StopwatchEvent {
 
   String get elapsedText {
     if (duration == null) return 'N/A';
-    Duration d = 
-    duration!;
+    Duration d = duration!;
     if (d.inMilliseconds < 1) return 'N/A';
     String text = '';
 
@@ -66,5 +65,10 @@ class StopwatchEvent {
     if (d.inSeconds % 60 > 0) text += '${d.inSeconds % 60}s ';
     if (d.inMilliseconds % 1000 > 0) text += '${d.inMilliseconds % 1000}ms ';
     return text;
+  }
+
+  int get milliSecondsFromStart {
+    if (startTime == null) return 0;
+    return DateTime.now().difference(startTime!).inMilliseconds;
   }
 }

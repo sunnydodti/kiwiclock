@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/colored_text_box.dart';
+import '../widgets/stopwatch_counter.dart';
 
 class StopwatchViewPage extends StatefulWidget {
   final String id;
@@ -41,6 +42,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
 
   Future<StopwatchEvent?> _loadStopwatchData() async {
     try {
+      await Future.delayed(const Duration(seconds: 1));
       if (_stopwatchData != null) return _stopwatchData;
       StopwatchEvent? swe =
           await context.read<TimeProvider>().getSweById(widget.id);
@@ -65,26 +67,23 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
       body: Center(
         child: SizedBox(
           width: min(350, MediaQuery.of(context).size.width * 0.8),
-          height: min(300, MediaQuery.of(context).size.height * 0.8),
           child: Card(
             elevation: 4,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Center(
-                child: FutureBuilder<StopwatchEvent?>(
-                  future: _loadStopwatchData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return ClockLoading();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (snapshot.hasData) {
-                      return buildDetails(_stopwatchData!);
-                    } else {
-                      return buildNoDataInfo(context);
-                    }
-                  },
-                ),
+              child: FutureBuilder<StopwatchEvent?>(
+                future: _loadStopwatchData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SizedBox(height: 200, child: ClockLoading());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return buildDetails(_stopwatchData!);
+                  } else {
+                    return buildNoDataInfo(context);
+                  }
+                },
               ),
             ),
           ),
@@ -121,29 +120,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
     if (event.endTime == null) {
       return _buildOngoingEvent(event);
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        buildTitle(event),
-        Divider(thickness: .2),
-        if (event.description != null) Text(event.description!),
-        const SizedBox(height: 16),
-        if (event.duration != null)
-          _buildDataTile('Duration', _formatDuration(event.duration!)),
-        if (event.startTime != null)
-          _buildDataTile(
-              'Start',
-              DateFormat('yyyy-MM-dd HH:mm:ss')
-                  .format(event.startTime!)),
-        if (event.endTime != null)
-          _buildDataTile('End',
-              DateFormat('yyyy-MM-dd HH:mm:ss').format(event.endTime!)),
-        if (event.author != null)
-          _buildDataTile('Created By', event.author!),
-        _buildDataTile('Views', (event.views ?? 0).toString()),
-      ],
-    );
+    return buildCompletedEvent(event);
   }
 
   Text buildTitle(StopwatchEvent event) {
@@ -186,8 +163,51 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
   Widget _buildOngoingEvent(StopwatchEvent event) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [ClockLoading(size: 30)],
+      children: [
+        buildTitle(event),
+        Divider(thickness: .2),
+        if (event.description != null)
+          Text(
+            event.description!,
+            maxLines: 5,
+          ),
+        const SizedBox(height: 16),
+        ClockLoading(size: 30),
+        const SizedBox(height: 8),
+        StopWatchCounter(event: event),
+        const SizedBox(height: 16),
+        if (event.startTime != null)
+          _buildDataTile('Start',
+              DateFormat('yyyy-MM-dd HH:mm:ss').format(event.startTime!)),
+        if (event.author != null) _buildDataTile('Author', event.author!),
+        _buildDataTile('Views', (event.views ?? 0).toString()),
+      ],
+    );
+  }
+
+  Column buildCompletedEvent(StopwatchEvent event) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        buildTitle(event),
+        Divider(thickness: .2),
+        if (event.description != null) Text(event.description!),
+        const SizedBox(height: 16),
+        if (event.duration != null)
+          _buildDataTile('Duration', _formatDuration(event.duration!)),
+        if (event.startTime != null)
+          _buildDataTile('Start',
+              DateFormat('yyyy-MM-dd HH:mm:ss').format(event.startTime!)),
+        if (event.endTime != null)
+          _buildDataTile(
+              'End', DateFormat('yyyy-MM-dd HH:mm:ss').format(event.endTime!)),
+        if (event.author != null) _buildDataTile('Author', event.author!),
+        _buildDataTile('Views', (event.views ?? 0).toString()),
+      ],
     );
   }
 }
