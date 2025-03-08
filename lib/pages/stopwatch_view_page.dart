@@ -10,6 +10,8 @@ import 'package:kiwiclock/widgets/my_appbar.dart';
 import 'package:kiwiclock/widgets/my_button.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/colored_text_box.dart';
+
 class StopwatchViewPage extends StatefulWidget {
   final String id;
 
@@ -30,7 +32,6 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
   Future<StopwatchHistory?> _loadStopwatchData() async {
     try {
       if (_stopwatchData != null) return _stopwatchData;
-      await Future.delayed(const Duration(seconds: 1));
       StopwatchHistory? swh =
           await context.read<TimeProvider>().getSwhById(widget.id);
       _stopwatchData = swh;
@@ -98,7 +99,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Explore'),
+                Text('Explore', overflow: TextOverflow.fade),
                 SizedBox(width: 8),
                 Icon(Icons.launch_outlined),
               ],
@@ -112,21 +113,28 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min, // Added for better layout
       children: [
-        Text(
-          stopwatchData.name ?? 'Unnamed Stopwatch',
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Text(stopwatchData.description ?? 'No description'),
+        buildTitle(stopwatchData),
+        Divider(thickness: .2),
+        if (stopwatchData.description != null) Text(stopwatchData.description!),
         const SizedBox(height: 16),
         _buildDataTile('Duration', _formatDuration(stopwatchData.duration!)),
         _buildDataTile('Start',
             DateFormat('yyyy-MM-dd HH:mm:ss').format(stopwatchData.startTime!)),
         _buildDataTile('End',
             DateFormat('yyyy-MM-dd HH:mm:ss').format(stopwatchData.endTime!)),
-        _buildDataTile('Created By', stopwatchData.createdBy ?? 'Unknown'),
+        if (stopwatchData.createdBy != null)
+          _buildDataTile('Created By', stopwatchData.createdBy!),
         _buildDataTile('Views', (stopwatchData.views ?? 0).toString()),
       ],
+    );
+  }
+
+  Text buildTitle(StopwatchHistory stopwatchData) {
+    return Text(
+      stopwatchData.name ?? 'Stopwatch',
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      maxLines: 3,
+      overflow: TextOverflow.fade,
     );
   }
 
@@ -134,11 +142,11 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(value),
+          ColoredTextBox(
+              text: value, color: Theme.of(context).colorScheme.primary),
         ],
       ),
     );

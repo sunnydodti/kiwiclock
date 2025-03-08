@@ -52,4 +52,18 @@ class StopwatchHistory {
 
   String get sharableLink => '${Constants.baseUrl}/stopwatch/$id';
   String get link => '${Constants.url}/stopwatch/$id';
+
+  String get elapsedText {
+    if (duration == null) return 'N/A';
+    Duration d = duration!;
+    if (d.inMilliseconds < 1) return 'N/A';
+    String text = '';
+
+    if (d.inDays > 0) text += '${d.inDays}d ';
+    if (d.inHours % 24 > 0) text += '${d.inHours % 24}h ';
+    if (d.inMinutes % 60 > 0) text += '${d.inMinutes % 60}m ';
+    if (d.inSeconds % 60 > 0) text += '${d.inSeconds % 60}s ';
+    if (d.inMilliseconds % 1000 > 0) text += '${d.inMilliseconds % 1000}ms ';
+    return text;
+  }
 }

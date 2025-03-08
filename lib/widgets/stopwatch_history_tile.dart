@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../data/provider/time_provider.dart';
 import '../models/stopwatch_history.dart';
+import 'colored_text_box.dart';
 import 'my_button.dart';
 
 class StopWatchHistoryTile extends StatefulWidget {
@@ -48,7 +49,11 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
           if (extended) _buildCopyLinkButton(),
         ],
       ),
-      trailing: Text(elapsedText, overflow: TextOverflow.ellipsis),
+      trailing: ColoredTextBox(
+        text: widget.history.elapsedText,
+        color: Theme.of(context).colorScheme.primary,
+        upperCase: false,
+      ),
     );
   }
 
@@ -86,20 +91,6 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
       padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
       child: ElevatedButton(onPressed: () {}, child: Icon(Icons.edit_outlined)),
     ));
-  }
-
-  String get elapsedText {
-    if (widget.history.duration == null) return 'N/A';
-    Duration d = widget.history.duration!;
-    if (d.inMilliseconds < 1) return 'N/A';
-    String text = '';
-
-    if (d.inDays > 0) text += '${d.inDays}d ';
-    if (d.inHours % 24 > 0) text += '${d.inHours % 24}h ';
-    if (d.inMinutes % 60 > 0) text += '${d.inMinutes % 60}m ';
-    if (d.inSeconds % 60 > 0) text += '${d.inSeconds % 60}s ';
-    if (d.inMilliseconds % 1000 > 0) text += '${d.inMilliseconds % 1000}ms ';
-    return text;
   }
 
   Widget _buildCopyLinkButton() {

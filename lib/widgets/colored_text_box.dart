@@ -6,6 +6,8 @@ class ColoredTextBox extends StatelessWidget {
   final double? fontSize;
   final FontWeight? fontWeight;
   final int opacity;
+  final TextOverflow textOverflow;
+  final bool upperCase;
 
   const ColoredTextBox({
     super.key,
@@ -14,6 +16,8 @@ class ColoredTextBox extends StatelessWidget {
     this.fontSize = 13,
     this.fontWeight = FontWeight.w500,
     this.opacity = 20,
+    this.textOverflow = TextOverflow.fade,
+    this.upperCase = true,
   });
 
   // Helper constructors for different colors
@@ -54,11 +58,12 @@ class ColoredTextBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        text.toUpperCase(),
+        upperCase ? text.toUpperCase() : text,
         style: TextStyle(
           fontSize: fontSize,
           color: color,
           fontWeight: fontWeight,
+          overflow: textOverflow,
         ),
       ),
     );
