@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kiwiclock/data/provider/time_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -66,14 +67,14 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         _buildPauseButton(),
         _buildStopButton(),
         _buildShareButton(),
-        _buildCopyLinkButton(),
+        _buildLinkButton(),
         Spacer(),
         _buildHistoryButton(),
       ],
     );
   }
 
-  Widget _buildCopyLinkButton() {
+  Widget _buildLinkButton() {
     if (context.select((TimeProvider t) {
       return t.stopwatchHistory?.id == null;
     })) {
@@ -86,11 +87,19 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
       return t.stopwatchHistory!.sharableLink;
     });
     return MyButton(
-      onPressed: () {},
+      onPressed: () {
+        print(link);
+        String id = context.read<TimeProvider>().stopwatchHistory!.id!;
+        context.goNamed(
+          'Stopwatch View',
+          pathParameters: {'id': id},
+        );
+      },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: Text(link, overflow: TextOverflow.ellipsis, maxLines: 2)),
+          Expanded(
+              child: Text(link, overflow: TextOverflow.ellipsis, maxLines: 2)),
           GestureDetector(
               onTap: () {
                 Clipboard.setData(ClipboardData(text: sharableLink));

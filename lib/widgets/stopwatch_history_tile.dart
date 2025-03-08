@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -105,7 +106,12 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
     if (widget.history.id == null) return SizedBox.shrink();
     String link = widget.history.link;
     return MyButton(
-      onPressed: () {},
+      onPressed: () {
+        context.goNamed(
+          'Stopwatch View',
+          pathParameters: {'id': widget.history.id!},
+        );
+      },
       edgeInsets: EdgeInsets.only(left: 8, right: 8, top: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
