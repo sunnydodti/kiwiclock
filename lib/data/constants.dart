@@ -15,6 +15,7 @@ class Constants {
 
   static final appShellNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'app shell');
-      
-  static String baseUrl = 'https://kiwiclock.persist.site';
+
+  static String url = 'kiwiclock.persist.site';
+  static String baseUrl = 'https://$url';
 }

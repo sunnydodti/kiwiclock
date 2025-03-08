@@ -105,7 +105,7 @@ class TimeProvider extends ChangeNotifier {
     _completedStopwatchHistory!.id = result[0]['id'];
     _stopwatchHistories.last = _completedStopwatchHistory!;
     _saveStopWatchHistories();
-
+    notifyListeners();
     return stopwatchHistory!.id!;
   }
 

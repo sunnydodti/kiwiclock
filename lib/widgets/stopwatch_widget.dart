@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kiwiclock/data/provider/time_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+
+import 'my_button.dart';
 
 class StopWatchWidget extends StatefulWidget {
   const StopWatchWidget({super.key});
@@ -63,9 +66,35 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         _buildPauseButton(),
         _buildStopButton(),
         _buildShareButton(),
+        _buildCopyLinkButton(),
         Spacer(),
         _buildHistoryButton(),
       ],
+    );
+  }
+
+  Widget _buildCopyLinkButton() {
+    if (context.select((TimeProvider t) {
+      return t.stopwatchHistory?.id == null;
+    })) {
+      return SizedBox.shrink();
+    }
+    String link = context.select((TimeProvider t) {
+      return t.stopwatchHistory!.link;
+    });
+    return MyButton(
+      onPressed: () {},
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Text(link, overflow: TextOverflow.ellipsis, maxLines: 2)),
+          GestureDetector(
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: link));
+              },
+              child: Icon(Icons.copy_outlined)),
+        ],
+      ),
     );
   }
 

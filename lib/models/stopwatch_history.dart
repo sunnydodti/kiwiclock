@@ -51,4 +51,5 @@ class StopwatchHistory {
   }
 
   String get sharableLink => '${Constants.baseUrl}/stopwatch/$id';
+  String get link => '${Constants.url}/stopwatch/$id';
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../data/provider/time_provider.dart';
 import '../models/stopwatch_history.dart';
+import 'my_button.dart';
 
 class StopWatchHistoryTile extends StatefulWidget {
   const StopWatchHistoryTile({
@@ -41,7 +43,8 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
                 // buildEditButton(),
                 buildShareButton()
               ],
-            )
+            ),
+          if (extended) _buildCopyLinkButton(),
         ],
       ),
       trailing: Text(elapsedText, overflow: TextOverflow.ellipsis),
@@ -67,9 +70,8 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
       padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
       child: ElevatedButton(
           onPressed: () async {
-            widget.history.id ??= await context
-                  .read<TimeProvider>()
-                  .shareHistory(widget.history);
+            widget.history.id ??=
+                await context.read<TimeProvider>().shareHistory(widget.history);
 
             Share.share(widget.history.sharableLink);
           },
@@ -97,5 +99,26 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
     if (d.inSeconds % 60 > 0) text += '${d.inSeconds % 60}s ';
     if (d.inMilliseconds % 1000 > 0) text += '${d.inMilliseconds % 1000}ms ';
     return text;
+  }
+
+  Widget _buildCopyLinkButton() {
+    if (widget.history.id == null) return SizedBox.shrink();
+    String link = widget.history.link;
+    return MyButton(
+      onPressed: () {},
+      edgeInsets: EdgeInsets.only(left: 8, right: 8, top: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+              child: Text(link, overflow: TextOverflow.ellipsis, maxLines: 2)),
+          GestureDetector(
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: link));
+              },
+              child: Icon(Icons.copy_outlined)),
+        ],
+      ),
+    );
   }
 }
