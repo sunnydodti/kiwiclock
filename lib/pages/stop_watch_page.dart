@@ -4,7 +4,7 @@ import 'package:kiwiclock/widgets/my_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:pwa_install/pwa_install.dart';
 
-import '../widgets/stopwatch_history_list.dart';
+import '../widgets/stopwatch_event_list.dart';
 import '../widgets/stopwatch_widget.dart';
 
 class StopWatchPage extends StatelessWidget {

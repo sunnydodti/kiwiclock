@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../data/provider/time_provider.dart';
-import '../models/stopwatch_history.dart';
+import '../models/stopwatch_event.dart';
 import 'colored_text_box.dart';
 import 'my_button.dart';
 

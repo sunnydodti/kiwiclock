@@ -3,7 +3,7 @@ import 'package:kiwiclock/data/provider/time_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pwa_install/pwa_install.dart';
 
-import '../widgets/stopwatch_history_list.dart';
+import 'stopwatch_event_list.dart';
 import '../widgets/stopwatch_widget.dart';
 
 class StopWatchBody extends StatelessWidget {

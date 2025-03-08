@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:kiwiclock/data/provider/time_provider.dart';
-import 'package:kiwiclock/models/stopwatch_history.dart';
+import 'package:kiwiclock/models/stopwatch_event.dart';
 import 'package:kiwiclock/widgets/clock_loading.dart';
 import 'package:kiwiclock/widgets/my_appbar.dart';
 import 'package:kiwiclock/widgets/my_button.dart';

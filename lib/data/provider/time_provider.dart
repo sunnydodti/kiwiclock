@@ -7,7 +7,7 @@ import 'package:kiwiclock/service/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../extensions/stopwatch.dart';
-import '../../models/stopwatch_history.dart';
+import '../../models/stopwatch_event.dart';
 
 class TimeProvider extends ChangeNotifier {
   late Box box;

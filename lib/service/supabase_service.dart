@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:kiwiclock/models/stopwatch_history.dart';
+import 'package:kiwiclock/models/stopwatch_event.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/constants.dart';

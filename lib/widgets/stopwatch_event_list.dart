@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:kiwiclock/data/provider/time_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'stopwatch_history_tile.dart';
+import 'stopwatch_event_tile.dart';
 
 class StopwatchEventList extends StatefulWidget {
   const StopwatchEventList({super.key});
