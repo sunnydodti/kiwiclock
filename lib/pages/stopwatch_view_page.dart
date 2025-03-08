@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:kiwiclock/models/stopwatch_history.dart';
+import 'package:kiwiclock/widgets/clock_loading.dart';
 import 'package:kiwiclock/widgets/my_appbar.dart';
 
 class StopwatchViewPage extends StatefulWidget {
@@ -54,62 +55,58 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppbar.build(context, title: 'Stopwatch', back: true),
-      body: FutureBuilder<StopwatchHistory?>(
-        future: _stopwatchDataFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            final stopwatchData = snapshot.data!;
-            return buildDetails(stopwatchData);
-          } else {
-            return Center(child: Text('No data found for id: ${widget.id}}'));
-          }
-        },
-      ),
-    );
-  }
-
-  Center buildDetails(StopwatchHistory stopwatchData) {
-    return Center(
-      child: SizedBox(
-        width: min(350, MediaQuery.of(context).size.width * 0.8),
-        child: Card(
-          elevation: 4,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min, // Added for better layout
-              children: [
-                Text(
-                  stopwatchData.name ?? 'Unnamed Stopwatch',
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+      body: Center(
+        child: SizedBox(
+          width: min(350, MediaQuery.of(context).size.width * 0.8),
+          height: min(300, MediaQuery.of(context).size.height * 0.8),
+          child: Card(
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: FutureBuilder<StopwatchHistory?>(
+                  future: _stopwatchDataFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return ClockLoading();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.hasData) {
+                      final stopwatchData = snapshot.data!;
+                      return buildDetails(stopwatchData);
+                    } else {
+                      return Text('No data found for id: ${widget.id}}');
+                    }
+                  },
                 ),
-                const SizedBox(height: 8),
-                Text(stopwatchData.description ?? 'No description'),
-                const SizedBox(height: 16),
-                _buildDataTile(
-                    'Duration', _formatDuration(stopwatchData.duration!)),
-                _buildDataTile(
-                    'Start',
-                    DateFormat('yyyy-MM-dd HH:mm:ss')
-                        .format(stopwatchData.startTime!)),
-                _buildDataTile(
-                    'End',
-                    DateFormat('yyyy-MM-dd HH:mm:ss')
-                        .format(stopwatchData.endTime!)),
-                _buildDataTile(
-                    'Created By', stopwatchData.createdBy ?? 'Unknown'),
-                _buildDataTile('Views', (stopwatchData.views ?? 0).toString()),
-              ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildDetails(StopwatchHistory stopwatchData) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min, // Added for better layout
+      children: [
+        Text(
+          stopwatchData.name ?? 'Unnamed Stopwatch',
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Text(stopwatchData.description ?? 'No description'),
+        const SizedBox(height: 16),
+        _buildDataTile('Duration', _formatDuration(stopwatchData.duration!)),
+        _buildDataTile('Start',
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(stopwatchData.startTime!)),
+        _buildDataTile('End',
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(stopwatchData.endTime!)),
+        _buildDataTile('Created By', stopwatchData.createdBy ?? 'Unknown'),
+        _buildDataTile('Views', (stopwatchData.views ?? 0).toString()),
+      ],
     );
   }
 
