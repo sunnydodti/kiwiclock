@@ -11,6 +11,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+
   go_router: ^14.8.1
   hive_ce: ^2.10.1
   hive_ce_flutter: ^2.2.0
