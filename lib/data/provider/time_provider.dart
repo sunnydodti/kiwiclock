@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:kiwiclock/data/constants.dart';
 import 'package:kiwiclock/service/supabase_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../extensions/stopwatch.dart';
 import '../../models/stopwatch_history.dart';
@@ -139,18 +142,15 @@ class TimeProvider extends ChangeNotifier {
 
   Future<StopwatchHistory?> getSwhById(String id) async {
     final result = await _supabaseService.getStopWatchHistory(id);
-    
+
     if (result.isEmpty) return null;
     return StopwatchHistory.fromJson(result);
+  }
 
-    // swh.id = result[0]['id'];
-    // _stopwatchHistories.firstWhere((h) {
-    //   return h.duration == swh.duration &&
-    //       h.startTime == swh.startTime &&
-    //       h.endTime == swh.endTime;
-    // }).id = swh.id;
-    // _saveStopWatchHistories();
-    // notifyListeners();
-    // return stopwatchHistory!.id!;
+  StreamSubscription<SupabaseStreamEvent> streamStopWatchHistoryById(
+    String id,
+    Function(List<Map<String, dynamic>>) onDataReceived,
+  ) {
+    return _supabaseService.streamStopWatchHistoryById(id, onDataReceived);
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:kiwiclock/widgets/clock_loading.dart';
 import 'package:kiwiclock/widgets/my_appbar.dart';
 import 'package:kiwiclock/widgets/my_button.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/colored_text_box.dart';
 
@@ -23,10 +25,18 @@ class StopwatchViewPage extends StatefulWidget {
 
 class _StopwatchViewPageState extends State<StopwatchViewPage> {
   StopwatchHistory? _stopwatchData;
+  late StreamSubscription<SupabaseStreamEvent> streamSubscription;
 
   @override
   void initState() {
     super.initState();
+    _subscribeToUpdates();
+  }
+
+  @override
+  void dispose() {
+    streamSubscription.cancel();
+    super.dispose();
   }
 
   Future<StopwatchHistory?> _loadStopwatchData() async {
@@ -69,8 +79,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (snapshot.hasData) {
-                      final stopwatchData = snapshot.data!;
-                      return buildDetails(stopwatchData);
+                      return buildDetails(_stopwatchData!);
                     } else {
                       return buildNoDataInfo(context);
                     }
@@ -150,5 +159,19 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
         ],
       ),
     );
+  }
+
+  void _subscribeToUpdates() {
+    streamSubscription = context
+        .read<TimeProvider>()
+        .streamStopWatchHistoryById(widget.id, onDataReceived);
+  }
+
+  onDataReceived(List<Map<String, dynamic>> data) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('${data[0]}')));
+    setState(() {
+      _stopwatchData = StopwatchHistory.fromJson  (data[0]);
+    });
   }
 }
