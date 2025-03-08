@@ -28,32 +28,43 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
   bool extended = false;
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () => setState(() => extended = !extended),
-      title: (widget.history.id != null) ? Text('${widget.history.id}') : null,
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-              'End: ${widget.history.endTime != null ? widget.formatter.format(widget.history.endTime!) : 'N/A'}'),
-          Text(
-              'Start: ${widget.history.startTime != null ? widget.formatter.format(widget.history.startTime!) : 'N/A'}'),
-          if (extended)
-            Row(
+    Color color = Theme.of(context).colorScheme.primary;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          color: (extended) ? color.withAlpha(20) : null,
+          child: ListTile(
+            onTap: () => setState(() => extended = !extended),
+            title: (widget.history.id != null)
+                ? Text('${widget.history.id}')
+                : null,
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDeleteButton(),
-                // buildEditButton(),
-                buildShareButton()
+                Text(
+                    'End: ${widget.history.endTime != null ? widget.formatter.format(widget.history.endTime!) : 'N/A'}'),
+                Text(
+                    'Start: ${widget.history.startTime != null ? widget.formatter.format(widget.history.startTime!) : 'N/A'}'),
               ],
             ),
-          if (extended) _buildCopyLinkButton(),
-        ],
-      ),
-      trailing: ColoredTextBox(
-        text: widget.history.elapsedText,
-        color: Theme.of(context).colorScheme.primary,
-        upperCase: false,
-      ),
+            trailing: ColoredTextBox(
+              text: widget.history.elapsedText,
+              color: Theme.of(context).colorScheme.primary,
+              upperCase: false,
+            ),
+          ),
+        ),
+        if (extended)
+          Row(
+            children: [
+              buildDeleteButton(),
+              // buildEditButton(),
+              buildShareButton()
+            ],
+          ),
+        if (extended) _buildCopyLinkButton(),
+      ],
     );
   }
 
@@ -113,6 +124,12 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
               onTap: () {
                 Clipboard.setData(
                     ClipboardData(text: widget.history.sharableLink));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Copied to clipboard'),
+                    duration: Durations.long2,
+                  ),
+                );
               },
               child: Icon(Icons.copy_outlined)),
         ],

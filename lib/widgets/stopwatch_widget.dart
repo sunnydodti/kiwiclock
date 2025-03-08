@@ -103,6 +103,12 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
           GestureDetector(
               onTap: () {
                 Clipboard.setData(ClipboardData(text: sharableLink));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Copied to clipboard'),
+                    duration: Durations.long2,
+                  ),
+                );
               },
               child: Icon(Icons.copy_outlined)),
         ],
