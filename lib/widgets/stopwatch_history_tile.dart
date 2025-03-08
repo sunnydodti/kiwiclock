@@ -65,16 +65,15 @@ class _StopWatchHistoryTileState extends State<StopWatchHistoryTile> {
     return Expanded(
         child: Padding(
       padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
-      child:
-          ElevatedButton(onPressed: () {
-            if (widget.history.id != null) {
-              Share.share(widget.history.id!);
-              return;
-            }
+      child: ElevatedButton(
+          onPressed: () async {
+            widget.history.id ??= await context
+                  .read<TimeProvider>()
+                  .shareHistory(widget.history);
 
-            context.read<TimeProvider>().shareCurrentHistory();
-
-          }, child: Icon(Icons.share_outlined)),
+            Share.share(widget.history.sharableLink);
+          },
+          child: Icon(Icons.share_outlined)),
     ));
   }
 

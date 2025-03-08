@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kiwiclock/data/provider/time_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class StopWatchWidget extends StatefulWidget {
@@ -80,10 +81,11 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
         child: ElevatedButton(
           onPressed: () async {
-            String result = await context.read<TimeProvider>().shareCurrentHistory();
+            String result =
+                await context.read<TimeProvider>().shareCurrentHistory();
             if (mounted) {
-              ScaffoldMessenger.maybeOf(context)
-                  ?.showSnackBar(SnackBar(content: Text(result)));
+              Share.share(
+                  context.read<TimeProvider>().stopwatchHistory!.sharableLink);
             }
           },
           child: Icon(Icons.share_outlined),
