@@ -2,6 +2,9 @@ class StopWatch extends Stopwatch {
   int _starterMilliseconds = 0;
 
   StopWatch();
+  factory StopWatch.fromMilliseconds(int milliseconds){
+    return StopWatch()..milliseconds = milliseconds;
+  }
 
   Duration get elapsedDuration {
     return Duration(
@@ -42,7 +45,7 @@ class StopWatch extends Stopwatch {
     if (days > 0) result += '${days}d ';
     if (hours > 0) result += '${hours}h ';
     if (minutes > 0) result += '${minutes}m ';
-    result += '$seconds.${milliseconds.toString().padLeft(3, '0')}';
+    result += '$seconds.${milliseconds.toString().padLeft(3, '0')}s';
     return result;
   }
 }

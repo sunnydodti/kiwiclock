@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
+import 'colored_text_box.dart';
 import 'my_button.dart';
 
 class StopWatchWidget extends StatefulWidget {
@@ -23,6 +24,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
   late Timer _timer;
 
   void rebuild(Timer timer) {
+    if (!mounted) return;
     if (context.read<TimeProvider>().stopWatch.isRunning) {
       setState(() {});
     }
@@ -59,6 +61,11 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     context.read<TimeProvider>().pauseStopWatch();
   }
 
+  void _resume() {
+    _timer = Timer.periodic(Duration(milliseconds: 100), rebuild);
+    context.read<TimeProvider>().resumeStopWatch();
+  }
+
   void _stop() {
     _timer.cancel();
     context.read<TimeProvider>().stopStopWatch();
@@ -72,7 +79,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         Spacer(),
         _buildClockLoading(),
         SizedBox(height: 10),
-        Text(context.select((TimeProvider t) => t.getTimeString())),
+        _buildTime(context),
         SizedBox(height: 10),
         _buildStartButton(),
         _buildPauseButton(),
@@ -82,6 +89,14 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
         Spacer(),
         _buildHistoryButton(),
       ],
+    );
+  }
+
+  ColoredTextBox _buildTime(BuildContext context) {
+    return ColoredTextBox(
+      text: context.select((TimeProvider t) => t.timeString),
+      color: Theme.of(context).colorScheme.primary,
+      upperCase: false,
     );
   }
 
@@ -205,13 +220,15 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
     if (context.select((TimeProvider t) => t.stopWatch.isRunning)) {
       return SizedBox.shrink();
     }
-
+    bool isPaused = context.select((TimeProvider t) {
+      return t.stopwatchEvent != null && t.stopwatchEvent!.isPaused;
+    });
     return SizedBox(
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
         child: ElevatedButton(
-          onPressed: _start,
+          onPressed: isPaused ? _resume : _start,
           child: Icon(Icons.play_arrow_outlined),
         ),
       ),

@@ -37,7 +37,7 @@ class StopwatchEvent {
       description: json['description'],
       views: json['views'],
       isPaused: json['isPaused'],
-      pauseDuration: Duration(milliseconds: json['duration']),
+      pauseDuration: Duration(milliseconds: json['pauseDuration']),
     );
   }
 

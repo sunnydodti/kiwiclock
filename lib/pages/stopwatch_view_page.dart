@@ -12,6 +12,7 @@ import 'package:kiwiclock/widgets/my_button.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../extensions/stopwatch.dart';
 import '../widgets/colored_text_box.dart';
 import '../widgets/stopwatch_counter.dart';
 
@@ -27,6 +28,7 @@ class StopwatchViewPage extends StatefulWidget {
 class _StopwatchViewPageState extends State<StopwatchViewPage> {
   StopwatchEvent? _stopwatchData;
   late StreamSubscription<SupabaseStreamEvent> streamSubscription;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -42,7 +44,6 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
 
   Future<StopwatchEvent?> _loadStopwatchData() async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
       if (_stopwatchData != null) return _stopwatchData;
       StopwatchEvent? swe =
           await context.read<TimeProvider>().getSweById(widget.id);
@@ -71,20 +72,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
             elevation: 4,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: FutureBuilder<StopwatchEvent?>(
-                future: _loadStopwatchData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SizedBox(height: 200, child: ClockLoading());
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    return buildDetails(_stopwatchData!);
-                  } else {
-                    return buildNoDataInfo(context);
-                  }
-                },
-              ),
+              child: _detailsBuilder(),
             ),
           ),
         ),
@@ -153,11 +141,25 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
   }
 
   onDataReceived(List<Map<String, dynamic>> data) {
+    if (data.isEmpty) {
+      setState(() => isLoading = false);
+      return;
+    }
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('${data[0]}')));
-    setState(() {
-      _stopwatchData = StopwatchEvent.fromJson(data[0]);
-    });
+        .showSnackBar(SnackBar(content: SelectableText('${data[0]}')));
+    try {
+      StopwatchEvent? swe = StopwatchEvent.fromJson(data[0]);
+
+      setState(() {
+        _stopwatchData = swe;
+        isLoading = false;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: SelectableText(e.toString()),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   Widget _buildOngoingEvent(StopwatchEvent event) {
@@ -174,10 +176,14 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
             maxLines: 5,
           ),
         const SizedBox(height: 16),
-        ClockLoading(size: 30),
-        const SizedBox(height: 8),
-        StopWatchCounter(event: event),
-        const SizedBox(height: 16),
+        if (!event.isPaused) ClockLoading(size: 30),
+        if (!event.isPaused) const SizedBox(height: 8),
+        if (!event.isPaused) StopWatchCounter(event: event),
+        if (!event.isPaused) const SizedBox(height: 16),
+        if (event.isPaused) Icon(Icons.pause),
+        if (event.isPaused) const SizedBox(height: 8),
+        if (event.isPaused) _buildElapsedText(event),
+        if (event.isPaused) const SizedBox(height: 16),
         if (event.startTime != null)
           _buildDataTile(
               'Start',
@@ -200,7 +206,7 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
         if (event.description != null) Text(event.description!),
         const SizedBox(height: 16),
         if (event.duration.inMilliseconds > 0)
-          _buildDataTile('Duration', _formatDuration(event.duration!)),
+          _buildDataTile('Duration', _formatDuration(event.duration)),
         if (event.startTime != null)
           _buildDataTile(
               'Start',
@@ -214,6 +220,24 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
         if (event.author != null) _buildDataTile('Author', event.author!),
         _buildDataTile('Views', event.views.toString()),
       ],
+    );
+  }
+
+  Widget _detailsBuilder() {
+    if (isLoading) return SizedBox(height: 200, child: const ClockLoading());
+    if (_stopwatchData == null) return buildNoDataInfo(context);
+    return buildDetails(_stopwatchData!);
+  }
+
+  Widget _buildElapsedText(StopwatchEvent event) {
+    Color color = Theme.of(context).colorScheme.primary;
+    StopWatch stopwatch =
+        StopWatch.fromMilliseconds(event.milliSecondsFromStart);
+
+    return ColoredTextBox(
+      text: stopwatch.timeString,
+      color: color,
+      upperCase: false,
     );
   }
 }

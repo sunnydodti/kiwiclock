@@ -23,6 +23,14 @@ class SupabaseService {
         .maybeSingle();
   }
 
+  Future updateStopWatchEventById(StopwatchEvent swe) async {
+    if (swe.id == null) return;
+    return Supabase.instance.client
+        .from(Constants.stopwatchTable)
+        .update(swe.toJson())
+        .eq('id', swe.id!);
+  }
+
   StreamSubscription<SupabaseStreamEvent> streamStopWatchEventById(
     String id,
     Function(List<Map<String, dynamic>>) onDataReceived,

@@ -15,7 +15,6 @@ class TimeProvider extends ChangeNotifier {
 
   late StopWatch _stopwatch;
   late StopWatch _pauseStopWatch;
-  bool isStopWatchCompleted = false;
   StopwatchEvent? _swe;
   List<StopwatchEvent> _stopwatchEvents = [];
   bool _isSweView = false;
@@ -46,15 +45,17 @@ class TimeProvider extends ChangeNotifier {
     if (!_stopwatch.isRunning) {
       _swe = null;
       _swe = StopwatchEvent();
-      _swe!.startTime = DateTime.now().toUtc();
       _stopwatch.start();
-      _swe!.isPaused = false;
+      _swe!.startTime = DateTime.now().toUtc();
       if (_pauseStopWatch.isRunning) {
         _pauseStopWatch.stop();
         _swe!.pauseDuration += _pauseStopWatch.elapsedDuration;
         _pauseStopWatch.reset();
       }
       notifyListeners();
+      _stopwatchEvents.add(_swe!);
+
+      _updateCurrentSwe();
     }
   }
 
@@ -64,22 +65,29 @@ class TimeProvider extends ChangeNotifier {
       _pauseStopWatch.start();
       _swe!.isPaused = true;
       notifyListeners();
+      _saveStopWatchEvents();
+      _updateCurrentSwe();
     }
   }
 
   void resumeStopWatch() {
     if (_pauseStopWatch.isRunning) {
-      _stopwatch.start();
       _pauseStopWatch.stop();
+      _stopwatch.start();
+      _swe!.pauseDuration += _pauseStopWatch.elapsedDuration;
+      _pauseStopWatch.reset();
       _swe!.isPaused = false;
       notifyListeners();
+
+      _saveStopWatchEvents();
+      _updateCurrentSwe();
     }
   }
 
   void stopStopWatch() {
     if (_stopwatch.elapsedMilliseconds > 0) {
       _swe!.endTime = DateTime.now().toUtc();
-      
+
       _stopwatch.stop();
       _pauseStopWatch.reset();
 
@@ -87,20 +95,12 @@ class TimeProvider extends ChangeNotifier {
       _stopwatch.reset();
       notifyListeners();
 
-      _stopwatchEvents.add(_swe!);
       _saveStopWatchEvents();
+      _updateCurrentSwe();
     }
   }
 
-  String getTimeString() {
-    var milli = _stopwatch.elapsedDuration.inMilliseconds;
-
-    String milliseconds = (milli % 1000).toString().padLeft(3, '0');
-    String seconds = ((milli ~/ 1000) % 60).toString().padLeft(2, '0');
-    String minutes = ((milli ~/ 1000) ~/ 60).toString().padLeft(2, '0');
-
-    return '$minutes:$seconds:$milliseconds';
-  }
+  String get timeString => _stopwatch.timeString;
 
   void getStopWatchEvents({bool notify = true}) {
     List<dynamic> swes =
@@ -171,5 +171,10 @@ class TimeProvider extends ChangeNotifier {
     Function(List<Map<String, dynamic>>) onDataReceived,
   ) {
     return _supabaseService.streamStopWatchEventById(id, onDataReceived);
+  }
+
+  void _updateCurrentSwe() {
+    if (_swe == null || _swe!.id == null) return;
+    _supabaseService.updateStopWatchEventById(_swe!);
   }
 }
