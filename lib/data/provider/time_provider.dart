@@ -43,7 +43,7 @@ class TimeProvider extends ChangeNotifier {
   void startStopwatch() {
     if (!_stopwatch.isRunning) {
       _completedStopwatchEvent = null;
-      _stopwatchEvent.startTime = DateTime.now();
+      _stopwatchEvent.startTime = DateTime.now().toUtc();
       _stopwatch.start();
       notifyListeners();
     }
@@ -58,7 +58,7 @@ class TimeProvider extends ChangeNotifier {
 
   void stopStopWatch() {
     if (_stopwatch.elapsedMilliseconds > 0) {
-      _stopwatchEvent.endTime = DateTime.now();
+      _stopwatchEvent.endTime = DateTime.now().toUtc();
       _stopwatch.stop();
       _stopwatchEvent.duration = _stopwatch.elapsedDuration;
       _stopwatch.reset();

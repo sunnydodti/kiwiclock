@@ -43,9 +43,9 @@ class _StopWatchEventTileState extends State<StopWatchEventTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    'End: ${widget.event.endTime != null ? widget.formatter.format(widget.event.endTime!) : 'N/A'}'),
+                    'End: ${widget.event.endTime != null ? widget.formatter.format(widget.event.endTime!.toLocal()) : 'N/A'}'),
                 Text(
-                    'Start: ${widget.event.startTime != null ? widget.formatter.format(widget.event.startTime!) : 'N/A'}'),
+                    'Start: ${widget.event.startTime != null ? widget.formatter.format(widget.event.startTime!.toLocal()) : 'N/A'}'),
               ],
             ),
             trailing: ColoredTextBox(

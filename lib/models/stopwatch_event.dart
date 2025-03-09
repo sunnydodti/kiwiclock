@@ -4,21 +4,25 @@ class StopwatchEvent {
   String? id;
   DateTime? startTime;
   DateTime? endTime;
-  Duration? duration;
+  Duration duration;
   String? author;
   String? name;
   String? description;
-  int? views;
+  int views;
+  bool isPaused;
+  Duration pauseDuration;
 
   StopwatchEvent({
+    this.id,
     this.startTime,
     this.endTime,
-    this.duration,
-    this.id,
+    this.duration = const Duration(milliseconds: 0),
     this.author,
     this.name,
     this.description,
-    this.views,
+    this.views = 0,
+    this.isPaused = false,
+    this.pauseDuration = const Duration(milliseconds: 0),
   });
 
   factory StopwatchEvent.fromJson(Map<dynamic, dynamic> json) {
@@ -27,13 +31,13 @@ class StopwatchEvent {
       startTime:
           json['startTime'] != null ? DateTime.parse(json['startTime']) : null,
       endTime: json['endTime'] != null ? DateTime.parse(json['endTime']) : null,
-      duration: json['duration'] != null
-          ? Duration(milliseconds: json['duration'])
-          : null,
+      duration: Duration(milliseconds: json['duration']),
       author: json['createdBy'],
       name: json['name'],
       description: json['description'],
       views: json['views'],
+      isPaused: json['isPaused'],
+      pauseDuration: Duration(milliseconds: json['duration']),
     );
   }
 
@@ -42,11 +46,13 @@ class StopwatchEvent {
       if (id != null) 'id': id,
       if (startTime != null) 'startTime': startTime?.toIso8601String(),
       if (endTime != null) 'endTime': endTime?.toIso8601String(),
-      if (duration != null) 'duration': duration?.inMilliseconds,
       if (author != null) 'createdBy': author,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
-      if (views != null) 'views': views,
+      'duration': duration.inMilliseconds,
+      'views': views,
+      'isPaused': isPaused,
+      'pauseDuration': pauseDuration.inMilliseconds,
     };
   }
 
@@ -54,8 +60,7 @@ class StopwatchEvent {
   String get link => '${Constants.url}/stopwatch/$id';
 
   String get elapsedText {
-    if (duration == null) return 'N/A';
-    Duration d = duration!;
+    Duration d = duration;
     if (d.inMilliseconds < 1) return 'N/A';
     String text = '';
 
@@ -69,6 +74,14 @@ class StopwatchEvent {
 
   int get milliSecondsFromStart {
     if (startTime == null) return 0;
-    return DateTime.now().difference(startTime!).inMilliseconds;
+    final now = DateTime.now().toUtc();
+    final a = now.millisecondsSinceEpoch; 
+    final b = startTime!.millisecondsSinceEpoch;
+    final c = pauseDuration.inMilliseconds;
+    final d = a - b;
+    final e = d - c;
+    return e;
+    // return DateTime.now().difference(startTime!).inMilliseconds -
+    //     pauseDuration.inMilliseconds;
   }
 }

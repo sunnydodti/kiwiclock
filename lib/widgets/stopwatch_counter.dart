@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../extensions/stopwatch.dart';
 import '../models/stopwatch_event.dart';
+import 'colored_text_box.dart';
 
 class StopWatchCounter extends StatefulWidget {
   final StopwatchEvent event;
@@ -36,7 +37,12 @@ class _StopWatchCounterState extends State<StopWatchCounter> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text(_stopwatch.timeString));
+    Color color = Theme.of(context).colorScheme.primary;
+    return ColoredTextBox(
+      text: _stopwatch.timeString,
+      color: color,
+      upperCase: false,
+    );
   }
 
   void rebuild(Timer timer) {

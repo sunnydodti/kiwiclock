@@ -179,10 +179,12 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
         StopWatchCounter(event: event),
         const SizedBox(height: 16),
         if (event.startTime != null)
-          _buildDataTile('Start',
-              DateFormat('yyyy-MM-dd HH:mm:ss').format(event.startTime!)),
+          _buildDataTile(
+              'Start',
+              DateFormat('yyyy-MM-dd HH:mm:ss')
+                  .format(event.startTime!.toLocal())),
         if (event.author != null) _buildDataTile('Author', event.author!),
-        _buildDataTile('Views', (event.views ?? 0).toString()),
+        _buildDataTile('Views', event.views.toString()),
       ],
     );
   }
@@ -197,16 +199,20 @@ class _StopwatchViewPageState extends State<StopwatchViewPage> {
         Divider(thickness: .2),
         if (event.description != null) Text(event.description!),
         const SizedBox(height: 16),
-        if (event.duration != null)
+        if (event.duration.inMilliseconds > 0)
           _buildDataTile('Duration', _formatDuration(event.duration!)),
         if (event.startTime != null)
-          _buildDataTile('Start',
-              DateFormat('yyyy-MM-dd HH:mm:ss').format(event.startTime!)),
+          _buildDataTile(
+              'Start',
+              DateFormat('yyyy-MM-dd HH:mm:ss')
+                  .format(event.startTime!.toLocal())),
         if (event.endTime != null)
           _buildDataTile(
-              'End', DateFormat('yyyy-MM-dd HH:mm:ss').format(event.endTime!)),
+              'End',
+              DateFormat('yyyy-MM-dd HH:mm:ss')
+                  .format(event.endTime!.toLocal())),
         if (event.author != null) _buildDataTile('Author', event.author!),
-        _buildDataTile('Views', (event.views ?? 0).toString()),
+        _buildDataTile('Views', event.views.toString()),
       ],
     );
   }
