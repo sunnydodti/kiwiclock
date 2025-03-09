@@ -81,7 +81,5 @@ class StopwatchEvent {
     final d = a - b;
     final e = d - c;
     return e;
-    // return DateTime.now().difference(startTime!).inMilliseconds -
-    //     pauseDuration.inMilliseconds;
   }
 }

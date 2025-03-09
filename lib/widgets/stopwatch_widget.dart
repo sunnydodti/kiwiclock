@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kiwiclock/data/provider/time_provider.dart';
+import 'package:kiwiclock/widgets/clock_loading.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -29,9 +30,16 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
 
   @override
   void initState() {
-    // _timer = Timer.periodic(Duration(milliseconds: 100), rebuild);
-    _timer = Timer.periodic(Duration(minutes: 1), rebuild);
+    _timer = _setStartTimer();
     super.initState();
+  }
+
+  Timer _setStartTimer() {
+    if (context.read<TimeProvider>().stopWatch.isRunning) {
+      return Timer.periodic(Duration(milliseconds: 100), rebuild);
+    }
+
+    return Timer.periodic(Duration(minutes: 1), rebuild);
   }
 
   @override
@@ -62,7 +70,10 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
       // mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Spacer(),
+        _buildClockLoading(),
+        SizedBox(height: 10),
         Text(context.select((TimeProvider t) => t.getTimeString())),
+        SizedBox(height: 10),
         _buildStartButton(),
         _buildPauseButton(),
         _buildStopButton(),
@@ -76,7 +87,8 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
 
   Widget _buildLinkButton() {
     if (context.select((TimeProvider t) {
-      return t.stopwatchEvent?.id == null;
+      if (t.stopwatchEvent == null) return true;
+      return t.stopwatchEvent!.id == null;
     })) {
       return SizedBox.shrink();
     }
@@ -171,6 +183,20 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
           onPressed: _pause,
           child: Icon(Icons.pause_outlined),
         ),
+      ),
+    );
+  }
+
+  SizedBox _buildClockLoading() {
+    if (context.select((TimeProvider t) => !t.stopWatch.isRunning)) {
+      return SizedBox.shrink();
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+        child: ClockLoading(),
       ),
     );
   }

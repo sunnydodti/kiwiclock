@@ -14,24 +14,26 @@ class TimeProvider extends ChangeNotifier {
   late SupabaseService _supabaseService;
 
   late StopWatch _stopwatch;
+  late StopWatch _pauseStopWatch;
   bool isStopWatchCompleted = false;
-  late StopwatchEvent _stopwatchEvent;
-  StopwatchEvent? _completedStopwatchEvent;
-  late List<StopwatchEvent> _stopwatchEvents = [];
+  StopwatchEvent? _swe;
+  List<StopwatchEvent> _stopwatchEvents = [];
   bool _isSweView = false;
 
   TimeProvider() {
-    _stopwatchEvent = StopwatchEvent();
     box = Hive.box(Constants.box);
     _supabaseService = SupabaseService();
+
     _stopwatch = StopWatch();
+    _pauseStopWatch = StopWatch();
+    // _swe = StopwatchEvent();
 
     getStopWatchEvents(notify: false);
     // _stopwatch.
   }
 
   StopWatch get stopWatch => _stopwatch;
-  StopwatchEvent? get stopwatchEvent => _completedStopwatchEvent;
+  StopwatchEvent? get stopwatchEvent => _swe;
   bool get isSweView => _isSweView;
   List<StopwatchEvent> get stopwatchEvents => _stopwatchEvents;
 
@@ -42,9 +44,16 @@ class TimeProvider extends ChangeNotifier {
 
   void startStopwatch() {
     if (!_stopwatch.isRunning) {
-      _completedStopwatchEvent = null;
-      _stopwatchEvent.startTime = DateTime.now().toUtc();
+      _swe = null;
+      _swe = StopwatchEvent();
+      _swe!.startTime = DateTime.now().toUtc();
       _stopwatch.start();
+      _swe!.isPaused = false;
+      if (_pauseStopWatch.isRunning) {
+        _pauseStopWatch.stop();
+        _swe!.pauseDuration += _pauseStopWatch.elapsedDuration;
+        _pauseStopWatch.reset();
+      }
       notifyListeners();
     }
   }
@@ -52,21 +61,33 @@ class TimeProvider extends ChangeNotifier {
   void pauseStopWatch() {
     if (_stopwatch.isRunning) {
       _stopwatch.stop();
+      _pauseStopWatch.start();
+      _swe!.isPaused = true;
+      notifyListeners();
+    }
+  }
+
+  void resumeStopWatch() {
+    if (_pauseStopWatch.isRunning) {
+      _stopwatch.start();
+      _pauseStopWatch.stop();
+      _swe!.isPaused = false;
       notifyListeners();
     }
   }
 
   void stopStopWatch() {
     if (_stopwatch.elapsedMilliseconds > 0) {
-      _stopwatchEvent.endTime = DateTime.now().toUtc();
+      _swe!.endTime = DateTime.now().toUtc();
+      
       _stopwatch.stop();
-      _stopwatchEvent.duration = _stopwatch.elapsedDuration;
+      _pauseStopWatch.reset();
+
+      _swe!.duration = _stopwatch.elapsedDuration;
       _stopwatch.reset();
       notifyListeners();
 
-      _completedStopwatchEvent = _stopwatchEvent;
-      _stopwatchEvent = StopwatchEvent();
-      _stopwatchEvents.add(_completedStopwatchEvent!);
+      _stopwatchEvents.add(_swe!);
       _saveStopWatchEvents();
     }
   }
@@ -103,10 +124,9 @@ class TimeProvider extends ChangeNotifier {
     if (stopwatchEvent == null) return '';
     if (stopwatchEvent!.id != null) return stopwatchEvent!.id!;
 
-    final result =
-        await _supabaseService.saveStopWatchEvent(stopwatchEvent!);
-    _completedStopwatchEvent!.id = result[0]['id'];
-    _stopwatchEvents.last = _completedStopwatchEvent!;
+    final result = await _supabaseService.saveStopWatchEvent(stopwatchEvent!);
+    _swe!.id = result[0]['id'];
+    _stopwatchEvents.last = _swe!;
     _saveStopWatchEvents();
     notifyListeners();
     return stopwatchEvent!.id!;
@@ -115,8 +135,7 @@ class TimeProvider extends ChangeNotifier {
   Future<String> shareSwe(StopwatchEvent swe) async {
     if (swe.id != null) return swe.id!;
 
-    final result =
-        await _supabaseService.saveStopWatchEvent(stopwatchEvent!);
+    final result = await _supabaseService.saveStopWatchEvent(stopwatchEvent!);
     swe.id = result[0]['id'];
     _stopwatchEvents.firstWhere((h) {
       return h.duration == swe.duration &&
