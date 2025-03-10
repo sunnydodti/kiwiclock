@@ -1,5 +1,3 @@
-import 'package:web/web.dart' as web;
-
 import 'package:flutter/foundation.dart';
 
 import '../data/constants.dart';
@@ -61,15 +59,9 @@ class StopwatchEvent {
   }
 
   // String get sharableLink => '${Constants.baseUrl}/stopwatch/$id';
-  String get sharableLink {
-    if (kIsWeb) return '${web.window.location.host}/stopwatch/$id';
-    return '${Constants.baseUrl}/stopwatch/$id';
-  }
+  String get sharableLink => '${Constants.baseUrl}/stopwatch/$id';
 
-  String get link {
-    if (kIsWeb) return '${web.window.location.host}/stopwatch/$id';
-    return '${Constants.url}/stopwatch/$id';
-  }
+  String get link => '${Constants.url}/stopwatch/$id';
 
   String get elapsedText {
     Duration d = duration;
