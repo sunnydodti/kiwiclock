@@ -41,7 +41,7 @@ class _StopWatchWidgetState extends State<StopWatchWidget> {
       return Timer.periodic(Duration(milliseconds: 100), rebuild);
     }
 
-    return Timer.periodic(Duration(minutes: 1), rebuild);
+    return Timer.periodic(Duration(hours: 1), rebuild);
   }
 
   @override

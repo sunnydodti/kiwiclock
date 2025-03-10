@@ -10,6 +10,7 @@ class Constants {
   static String indexKey = 'index';
 
   static String stopwatchEventsKey = 'stopwatch_histories';
+  static String currentStopwatchEventKey = 'current_ stopwatch_event';
 
   static String stopwatchTable = 'stopwatch';
 

@@ -27,7 +27,8 @@ class TimeProvider extends ChangeNotifier {
     _pauseStopWatch = StopWatch();
     // _swe = StopwatchEvent();
 
-    getStopWatchEvents(notify: false);
+    _getStopWatchEvents(notify: false);
+    _getCurrentStopWatchEvent(notify: false);
     // _stopwatch.
   }
 
@@ -56,6 +57,7 @@ class TimeProvider extends ChangeNotifier {
       _stopwatchEvents.add(_swe!);
 
       _updateCurrentSwe();
+      _saveCurrentStopWatchEvent();
     }
   }
 
@@ -65,6 +67,8 @@ class TimeProvider extends ChangeNotifier {
       _pauseStopWatch.start();
       _swe!.isPaused = true;
       notifyListeners();
+
+      _saveCurrentStopWatchEvent();
       _saveStopWatchEvents();
       _updateCurrentSwe();
     }
@@ -79,6 +83,7 @@ class TimeProvider extends ChangeNotifier {
       _swe!.isPaused = false;
       notifyListeners();
 
+      _saveCurrentStopWatchEvent();
       _saveStopWatchEvents();
       _updateCurrentSwe();
     }
@@ -102,7 +107,7 @@ class TimeProvider extends ChangeNotifier {
 
   String get timeString => _stopwatch.timeString;
 
-  void getStopWatchEvents({bool notify = true}) {
+  void _getStopWatchEvents({bool notify = true}) {
     List<dynamic> swes =
         box.get(Constants.stopwatchEventsKey, defaultValue: []);
     if (swes.isNotEmpty) {
@@ -118,6 +123,17 @@ class TimeProvider extends ChangeNotifier {
       swes.add(swe.toJson());
     }
     box.put(Constants.stopwatchEventsKey, swes);
+  }
+
+  void _saveCurrentStopWatchEvent() {
+    if (_swe == null) return;
+    box.put(Constants.currentStopwatchEventKey, _swe!.toJson());
+  }
+
+  void _getCurrentStopWatchEvent({bool notify = true}) {
+    StopwatchEvent? swe = box.get(Constants.currentStopwatchEventKey);
+    if (swe != null) _swe = swe;
+    if (notify) notifyListeners();
   }
 
   Future<String> shareCurrentSwe() async {
