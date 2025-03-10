@@ -28,7 +28,7 @@ class TimeProvider extends ChangeNotifier {
     // _swe = StopwatchEvent();
 
     _getStopWatchEvents(notify: false);
-    _getCurrentStopWatchEvent(notify: false);
+    // _getCurrentStopWatchEvent(notify: false);
     // _stopwatch.
   }
 
