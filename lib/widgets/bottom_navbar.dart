@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data/provider/nav_Provider.dart';
+import '../data/provider/nav_provider.dart';
+
 
 class BottomNavbar extends StatelessWidget {
   const BottomNavbar({super.key});

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kiwiclock/data/provider/nav_Provider.dart';
-import 'package:kiwiclock/pages/stop_watch_page.dart';
+import 'package:provider/provider.dart';
+
 import 'package:kiwiclock/widgets/my_appbar.dart';
 import 'package:kiwiclock/widgets/stopwatch_body.dart';
-import 'package:kiwiclock/widgets/timer_widget.dart';
-import 'package:provider/provider.dart';
-import 'package:pwa_install/pwa_install.dart';
 
-import '../data/provider/theme_provider.dart';
+import '../data/provider/nav_provider.dart';
 import '../widgets/bottom_navbar.dart';
 
 class HomePage extends StatefulWidget {
