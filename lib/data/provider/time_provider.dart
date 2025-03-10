@@ -131,8 +131,10 @@ class TimeProvider extends ChangeNotifier {
   }
 
   void _getCurrentStopWatchEvent({bool notify = true}) {
-    StopwatchEvent? swe = box.get(Constants.currentStopwatchEventKey);
-    if (swe != null) _swe = swe;
+    Map<dynamic, dynamic>? sweMap = box.get(Constants.currentStopwatchEventKey);
+    if (sweMap == null) return;
+    StopwatchEvent? swe = StopwatchEvent.fromJson(sweMap);
+    _swe = swe;
     if (notify) notifyListeners();
   }
 
