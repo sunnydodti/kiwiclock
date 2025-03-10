@@ -24,6 +24,7 @@ dependencies:
   share_plus: ^10.1.4
   stop_watch_timer: ^3.2.1
   supabase_flutter: ^2.8.4
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_lints: ^5.0.0

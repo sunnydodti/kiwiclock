@@ -1,3 +1,7 @@
+import 'package:web/web.dart' as web;
+
+import 'package:flutter/foundation.dart';
+
 import '../data/constants.dart';
 
 class StopwatchEvent {
@@ -56,8 +60,16 @@ class StopwatchEvent {
     };
   }
 
-  String get sharableLink => '${Constants.baseUrl}/stopwatch/$id';
-  String get link => '${Constants.url}/stopwatch/$id';
+  // String get sharableLink => '${Constants.baseUrl}/stopwatch/$id';
+  String get sharableLink {
+    if (kIsWeb) return '${web.window.location.host}/stopwatch/$id';
+    return '${Constants.baseUrl}/stopwatch/$id';
+  }
+
+  String get link {
+    if (kIsWeb) return '${web.window.location.host}/stopwatch/$id';
+    return '${Constants.url}/stopwatch/$id';
+  }
 
   String get elapsedText {
     Duration d = duration;
@@ -75,7 +87,7 @@ class StopwatchEvent {
   int get milliSecondsFromStart {
     if (startTime == null) return 0;
     final now = DateTime.now().toUtc();
-    final a = now.millisecondsSinceEpoch; 
+    final a = now.millisecondsSinceEpoch;
     final b = startTime!.millisecondsSinceEpoch;
     final c = pauseDuration.inMilliseconds;
     final d = a - b;
