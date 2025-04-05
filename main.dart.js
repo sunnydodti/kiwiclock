@@ -86546,7 +86546,7 @@ $S:533}
 A.azP.prototype={
 $1(a){var s=new A.jr($.aD()),r=t.PG.a($.ys().q9("kiwiclock_box",!1,t.z))
 s.a=r
-s.b=r.wB(0,"index",0)
+s.b=r.wB(0,"index",1)
 return s},
 $S:534}
 A.azQ.prototype={
