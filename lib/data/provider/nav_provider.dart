@@ -9,7 +9,7 @@ class NavProvider extends ChangeNotifier {
 
   NavProvider() {
     box = Hive.box(Constants.box);
-    _index = box.get(Constants.indexKey, defaultValue: 0);
+    _index = box.get(Constants.indexKey, defaultValue: 1);
   }
 
 
