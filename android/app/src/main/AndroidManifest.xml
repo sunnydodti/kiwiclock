@@ -2,12 +2,7 @@
     <application
         android:label="kiwiclock"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1667237615319309~5003376246"/>
-
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"

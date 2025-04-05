@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Constants {
@@ -20,5 +19,4 @@ class Constants {
 
   static String url = 'kiwiclock.persist.site';
   static String baseUrl = 'https://$url';
-
 }

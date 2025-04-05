@@ -5,7 +5,6 @@ import 'package:kiwiclock/widgets/my_appbar.dart';
 import 'package:kiwiclock/widgets/stopwatch_body.dart';
 
 import '../data/provider/nav_provider.dart';
-import '../widgets/ads/mobile/android/admob_banner_ad.dart';
 import '../widgets/bottom_navbar.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,7 +23,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: BottomNavbar(),
       body: [
-        AdmobBannerAd(),
+        Placeholder(),
         StopWatchBody(),
       ][navProvider.index],
     );

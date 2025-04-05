@@ -15,8 +15,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.RELEASE_TOKEN }}
           ref: ${{ github.ref_name }}
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: commit push to pages-dev branch
         run: |
