@@ -13,6 +13,7 @@ class Constants {
   static String currentStopwatchEventKey = 'current_ stopwatch_event';
 
   static String stopwatchTable = 'stopwatch';
+  static String logsTable = 'logs';
 
   static final appShellNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'app shell');

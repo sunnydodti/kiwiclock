@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:kiwiclock/data/constants.dart';
 import 'package:kiwiclock/pages/home_page.dart';
+import 'package:kiwiclock/pages/ping_page.dart';
 import 'package:kiwiclock/pages/stop_watch_page.dart';
 import 'package:kiwiclock/pages/stopwatch_view_page.dart';
 
@@ -17,6 +18,7 @@ class AppRouter {
           routes: [
             _homeToute(),
             _stopwatchRoute(),
+            _pingRoute(),
           ])
     ],
   );
@@ -49,5 +51,15 @@ class AppRouter {
             },
           )
         ]);
+  }
+
+  static GoRoute _pingRoute() {
+    return GoRoute(
+      name: 'Ping',
+      path: '/ping',
+      builder: (context, state) {
+        return PingPage();
+      },
+    );
   }
 }

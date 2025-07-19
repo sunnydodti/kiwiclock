@@ -41,4 +41,9 @@ class SupabaseService {
         .eq('id', id)
         .listen(onDataReceived);
   }
+
+  ping() async {
+    final data = await Supabase.instance.client.from(Constants.logsTable).insert({'type': 1});
+    print(data);
+  }
 }
